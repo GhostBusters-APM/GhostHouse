@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">GhostHouse</string>
+    <string name="title_home">Home</string>
+    <string name="title_ra">AR</string>
+    <string name="title_cloud">Data</string>
+    <string name="title_account">User</string>
+</resources>
