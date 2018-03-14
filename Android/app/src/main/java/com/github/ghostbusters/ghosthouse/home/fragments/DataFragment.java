@@ -8,6 +8,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Toast;
+
+import com.github.ghostbusters.ghosthouse.home.Home;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.helper.StaticLabelsFormatter;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.series.OnDataPointTapListener;
+import com.jjoe64.graphview.series.Series;
+import com.jjoe64.graphview.series.DataPointInterface;
+
+
 
 import com.github.ghostbusters.ghosthouse.R;
 
@@ -66,6 +79,32 @@ public class DataFragment extends Fragment {
 							 Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
 		View view = inflater.inflate(R.layout.fragment_data, container, false);
+
+//		super.onCreate(savedInstanceState);
+//		view.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//		setContentView(R.layout.activity_main);
+
+		GraphView line_graph = (GraphView) view.findViewById(R.id.graph);
+		LineGraphSeries<DataPoint> line_series =
+				new LineGraphSeries<DataPoint>(new DataPoint[]{
+						new DataPoint(0, 100),
+						new DataPoint(1, 500),
+						new DataPoint(2, 300),
+						new DataPoint(3, 200),
+						new DataPoint(4, 600)
+				});
+
+		StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(line_graph);
+		staticLabelsFormatter.setHorizontalLabels(new String[] {"Jan", "Feb", "March", "April", "May"});
+		line_graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
+
+		line_graph.addSeries(line_series);
+//		line_series.setOnDataPointTapListener(new OnDataPointTapListener() {
+//			@Override
+//			public void onTap(Series series, DataPointInterface dataPoint) {
+//				Toast.makeText(HomeFragment.this, "Series: On Data Point clicked: " + dataPoint, Toast.LENGTH_SHORT).show();
+//			}
+//		});
 		return view;
 	}
 
