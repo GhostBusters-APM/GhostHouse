@@ -8,6 +8,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+import android.widget.ToggleButton;
 
 import com.github.ghostbusters.ghosthouse.R;
 
@@ -24,6 +29,7 @@ public class UserFragment extends Fragment {
 	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 	private static final String ARG_PARAM1 = "param1";
 	private static final String ARG_PARAM2 = "param2";
+	private static final String TAG = "UserFragment";
 	// TODO: Rename and change types of parameters
 	private String mParam1;
 	private String mParam2;
@@ -66,6 +72,53 @@ public class UserFragment extends Fragment {
 							 Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
 		View view = inflater.inflate(R.layout.fragment_user, container, false);
+
+		Button button = (Button) view.findViewById(R.id.buttonLogOut);
+		button.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				Log.v(TAG, "Se ha pulsado el botón de Logout");
+			}
+		});
+
+		Switch switch1 = (Switch) view.findViewById(R.id.switch1);
+		switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if (isChecked) {
+					// The toggle is enabled
+					Log.v(TAG, "Switch activado");
+ 				} else {
+					// The toggle is disabled
+ 					Log.v(TAG, "Switch desactivado");
+				}
+			}
+		});
+
+		CheckBox checkbox1 = (CheckBox) view.findViewById(R.id.checkBox1);
+		checkbox1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if (isChecked) {
+					// The toggle is enabled
+					Log.v(TAG, "Checkbox1 activado");
+				} else {
+					// The toggle is disabled
+					Log.v(TAG, "Checkbox1 desactivado");
+				}
+			}
+		});
+
+		CheckBox checkbox2 = (CheckBox) view.findViewById(R.id.checkBox2);
+		checkbox2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if (isChecked) {
+					// The toggle is enabled
+					Log.v(TAG, "Checkbox2 activado");
+				} else {
+					// The toggle is disabled
+					Log.v(TAG, "Checkbox2 desactivado");
+				}
+			}
+		});
+
 		return view;
 	}
 
@@ -112,5 +165,7 @@ public class UserFragment extends Fragment {
 		// TODO: Update argument type and name
 		void onFragmentInteraction(Uri uri);
 	}
+
+
 
 }
