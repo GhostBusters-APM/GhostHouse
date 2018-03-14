@@ -4,4 +4,18 @@
     <string name="title_ra">AR</string>
     <string name="title_cloud">Data</string>
     <string name="title_account">User</string>
+    <string name="title_activity_new_device">New Device</string>
+    <string name="device_name_tv_str">Name</string>
+    <string name="device_name_et_hint_str">Device name</string>
+    <string name="avilable_devices_tv_str">Available devices</string>
+    <string name="add_device_but_str">Add</string>
+    <string name="loading_devices_tv_str">Searching for available devices…</string>
+
+    <string-array name="available_devices_array">
+        <item>Device 0</item>
+        <item>Device 1</item>
+        <item>Device 2</item>
+        <item>Device 3</item>
+    </string-array>
+
 </resources>
