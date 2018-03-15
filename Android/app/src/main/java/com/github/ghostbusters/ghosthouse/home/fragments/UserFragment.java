@@ -1,6 +1,7 @@
 package com.github.ghostbusters.ghosthouse.home.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,9 +13,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Switch;
-import android.widget.ToggleButton;
 
 import com.github.ghostbusters.ghosthouse.R;
+import com.github.ghostbusters.ghosthouse.loggin.LoginActivity;
 
 /**
  * A fragment with a Google +1 button.
@@ -49,72 +50,78 @@ public class UserFragment extends Fragment {
 	 * @return A new instance of fragment UserFragment.
 	 */
 	// TODO: Rename and change types and number of parameters
-	public static UserFragment newInstance(String param1, String param2) {
-		UserFragment fragment = new UserFragment();
-		Bundle args = new Bundle();
-		args.putString(ARG_PARAM1, param1);
-		args.putString(ARG_PARAM2, param2);
+	public static UserFragment newInstance(final String param1, final String param2) {
+		final UserFragment fragment = new UserFragment();
+		final Bundle args = new Bundle();
+		args.putString(UserFragment.ARG_PARAM1, param1);
+		args.putString(UserFragment.ARG_PARAM2, param2);
 		fragment.setArguments(args);
 		return fragment;
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (getArguments() != null) {
-			mParam1 = getArguments().getString(ARG_PARAM1);
-			mParam2 = getArguments().getString(ARG_PARAM2);
+		if (this.getArguments() != null) {
+			this.mParam1 = this.getArguments().getString(UserFragment.ARG_PARAM1);
+			this.mParam2 = this.getArguments().getString(UserFragment.ARG_PARAM2);
 		}
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-							 Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+							 final Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View view = inflater.inflate(R.layout.fragment_user, container, false);
+		final View view = inflater.inflate(R.layout.fragment_user, container, false);
 
-		Button button = (Button) view.findViewById(R.id.buttonLogOut);
+		final Button button = (Button) view.findViewById(R.id.buttonLogOut);
 		button.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				Log.v(TAG, "Se ha pulsado el botón de Logout");
+			@Override
+			public void onClick(final View v) {
+				Log.v(UserFragment.TAG, "Se ha pulsado el botón de Logout");
+				final Intent intent = new Intent(UserFragment.this.getActivity(), LoginActivity.class);
+				UserFragment.this.startActivity(intent);
 			}
 		});
 
-		Switch switch1 = (Switch) view.findViewById(R.id.switch1);
+		final Switch switch1 = (Switch) view.findViewById(R.id.switch1);
 		switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+			@Override
+			public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
 				if (isChecked) {
 					// The toggle is enabled
-					Log.v(TAG, "Switch activado");
- 				} else {
+					Log.v(UserFragment.TAG, "Switch activado");
+				} else {
 					// The toggle is disabled
- 					Log.v(TAG, "Switch desactivado");
+					Log.v(UserFragment.TAG, "Switch desactivado");
 				}
 			}
 		});
 
-		CheckBox checkbox1 = (CheckBox) view.findViewById(R.id.checkBox1);
+		final CheckBox checkbox1 = (CheckBox) view.findViewById(R.id.checkBox1);
 		checkbox1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+			@Override
+			public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
 				if (isChecked) {
 					// The toggle is enabled
-					Log.v(TAG, "Checkbox1 activado");
+					Log.v(UserFragment.TAG, "Checkbox1 activado");
 				} else {
 					// The toggle is disabled
-					Log.v(TAG, "Checkbox1 desactivado");
+					Log.v(UserFragment.TAG, "Checkbox1 desactivado");
 				}
 			}
 		});
 
-		CheckBox checkbox2 = (CheckBox) view.findViewById(R.id.checkBox2);
+		final CheckBox checkbox2 = (CheckBox) view.findViewById(R.id.checkBox2);
 		checkbox2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+			@Override
+			public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
 				if (isChecked) {
 					// The toggle is enabled
-					Log.v(TAG, "Checkbox2 activado");
+					Log.v(UserFragment.TAG, "Checkbox2 activado");
 				} else {
 					// The toggle is disabled
-					Log.v(TAG, "Checkbox2 desactivado");
+					Log.v(UserFragment.TAG, "Checkbox2 desactivado");
 				}
 			}
 		});
@@ -129,17 +136,17 @@ public class UserFragment extends Fragment {
 	}
 
 	// TODO: Rename method, update argument and hook method into UI event
-	public void onButtonPressed(Uri uri) {
-		if (mListener != null) {
-			mListener.onFragmentInteraction(uri);
+	public void onButtonPressed(final Uri uri) {
+		if (this.mListener != null) {
+			this.mListener.onFragmentInteraction(uri);
 		}
 	}
 
 	@Override
-	public void onAttach(Context context) {
+	public void onAttach(final Context context) {
 		super.onAttach(context);
 		if (context instanceof OnFragmentInteractionListener) {
-			mListener = (OnFragmentInteractionListener) context;
+			this.mListener = (OnFragmentInteractionListener) context;
 		} else {
 			Log.d(UserFragment.class.getName(), "USER ATTACHED");
 		}
@@ -148,7 +155,7 @@ public class UserFragment extends Fragment {
 	@Override
 	public void onDetach() {
 		super.onDetach();
-		mListener = null;
+		this.mListener = null;
 	}
 
 	/**
@@ -165,7 +172,6 @@ public class UserFragment extends Fragment {
 		// TODO: Update argument type and name
 		void onFragmentInteraction(Uri uri);
 	}
-
 
 
 }

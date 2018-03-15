@@ -19,5 +19,7 @@
         <item>Device 2</item>
         <item>Device 3</item>
     </string-array>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="log_in">Log In</string>
 
 </resources>
