@@ -1,6 +1,7 @@
 package com.github.ghostbusters.ghosthouse.home.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +14,12 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import com.github.ghostbusters.ghosthouse.R;
+import com.github.ghostbusters.ghosthouse.newdevice.NewDevice;
+
+import java.util.Locale;
+
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A fragment with a Google +1 button.
@@ -31,6 +38,8 @@ public class HomeFragment extends Fragment {
 	private String mParam1;
 	private String mParam2;
 	public static final String TAG = HomeFragment.class.getSimpleName();
+
+	private static final int ADD_DEVICE_REQUEST_CODE = 1;
 
 
 //	private OnFragmentInteractionListener mListener;
@@ -103,12 +112,37 @@ public class HomeFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "Add new device");
+				Intent intent = new Intent(getActivity(), NewDevice.class);
+				startActivityForResult(intent, ADD_DEVICE_REQUEST_CODE);
 			}
 		});
 
 
 
 	}
+
+	@Override
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+	    switch (requestCode) {
+            case ADD_DEVICE_REQUEST_CODE:
+                switch (resultCode) {
+                    case RESULT_OK:
+                        int newDeviceId = resultData.getIntExtra(NewDevice.DEVICE_ID_RESULT, -1);
+                        Log.d(TAG, String.format(Locale.ENGLISH, "new device added with id: %d",
+                                newDeviceId));
+                        break;
+                    case RESULT_CANCELED:
+                        Log.d(TAG, "adding new device cancelled of failed");
+                        break;
+                    default:
+                        Log.d(TAG, "unknown result code for new device request");
+                        break;
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, resultData);
+        }
+    }
 
 //	@Override
 //	public void onResume() {

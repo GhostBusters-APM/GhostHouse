@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -151,6 +152,23 @@ public class NewDevice extends AppCompatActivity {
                 v.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+
+    /*
+     * Make the up button in the toolbar emulate the back button
+     * on the device.
+     *
+     * https://stackoverflow.com/a/39718652/8923487
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                super.onBackPressed();
+                break;
+        }
+        return true;
     }
 
 }
