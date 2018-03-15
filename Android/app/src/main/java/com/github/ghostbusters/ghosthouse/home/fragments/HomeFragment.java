@@ -3,11 +3,14 @@ package com.github.ghostbusters.ghosthouse.home.fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import com.github.ghostbusters.ghosthouse.R;
 
@@ -27,8 +30,10 @@ public class HomeFragment extends Fragment {
 	// TODO: Rename and change types of parameters
 	private String mParam1;
 	private String mParam2;
+	public static final String TAG = HomeFragment.class.getSimpleName();
 
-	private OnFragmentInteractionListener mListener;
+
+//	private OnFragmentInteractionListener mListener;
 
 	public HomeFragment() {
 		// Required empty public constructor
@@ -70,35 +75,70 @@ public class HomeFragment extends Fragment {
 		return view;
 	}
 
-	@Override
-	public void onResume() {
-		super.onResume();
-
-	}
-
-	// TODO: Rename method, update argument and hook method into UI event
-	public void onButtonPressed(Uri uri) {
-		if (mListener != null) {
-			mListener.onFragmentInteraction(uri);
-		}
-	}
 
 	@Override
-	public void onAttach(Context context) {
-		super.onAttach(context);
-		if (context instanceof OnFragmentInteractionListener) {
-			mListener = (OnFragmentInteractionListener) context;
-		} else {
-			Log.d(HomeFragment.class.getName(), "HOME ATTACHED");
-		}
+	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+
+//		final ImageView imageView = (ImageView) view.findViewById(R.id.fragment_a_imageView);
+
+		final ImageButton imageView = (ImageButton) view.findViewById(R.id.fragment_a_imageButton);
+		final ImageButton add = (ImageButton) view.findViewById(R.id.addImage);
+
+//		Button button = (Button) view.findViewById(R.id.fragment_a_btn);
+		imageView.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				DeviceDetailsFragment simpleFragmentB = DeviceDetailsFragment.newInstance("param1","param2");
+				getFragmentManager()
+						.beginTransaction()
+						.addSharedElement(imageView, ViewCompat.getTransitionName(imageView))
+						.addToBackStack(TAG)
+						.replace(R.id.home_base_frame, simpleFragmentB)
+						.commit();
+			}
+		});
+
+		add.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.d(TAG, "Add new device");
+			}
+		});
+
+
+
 	}
 
-	@Override
-	public void onDetach() {
-		super.onDetach();
-		mListener = null;
-	}
-
+//	@Override
+//	public void onResume() {
+//		super.onResume();
+//
+//	}
+//
+//	// TODO: Rename method, update argument and hook method into UI event
+//	public void onButtonPressed(Uri uri) {
+//		if (mListener != null) {
+//			mListener.onFragmentInteraction(uri);
+//		}
+//	}
+//
+//	@Override
+//	public void onAttach(Context context) {
+//		super.onAttach(context);
+//		if (context instanceof OnFragmentInteractionListener) {
+//			mListener = (OnFragmentInteractionListener) context;
+//		} else {
+//			Log.d(HomeFragment.class.getName(), "HOME ATTACHED");
+//		}
+//	}
+//
+//	@Override
+//	public void onDetach() {
+//		super.onDetach();
+//		mListener = null;
+//	}
+//
 	/**
 	 * This interface must be implemented by activities that contain this
 	 * fragment to allow an interaction in this fragment to be communicated

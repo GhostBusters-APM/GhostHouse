@@ -1,30 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="#F5F5F6"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F5F5F6">
 
 
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
-        android:layout_height="107dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toEndOf="parent">
 
-       <!-- <android.support.v7.widget.Toolbar
+        <!-- <android.support.v7.widget.Toolbar
             android:id="@+id/my_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme" /> -->
+
+
+        <ImageView
+            android:id="@+id/fragment_b_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:contentDescription="Item Details"
+            android:padding="20dp"
+            android:scaleType="center"
+            android:src="@drawable/computer"
+            android:transitionName="@string/simple_fragment_transition"
+            tools:ignore="UnusedAttribute" />
 
         <Switch
             android:id="@+id/switch13"
@@ -103,7 +115,7 @@
                     android:layout_weight="1"
                     android:splitTrack="false"
                     android:switchMinWidth="50dp"
-                    android:thumbTint="@android:color/darker_gray"/>
+                    android:thumbTint="@android:color/darker_gray" />
             </LinearLayout>
 
             <TextView

@@ -27,6 +27,14 @@ public class Home extends AppCompatActivity {
 		navigation.setOnNavigationItemSelectedListener(this::onNavigationBarItemSelected);
 		BottomBarHelper.disableShiftMode(navigation);
 		navigation.setSelectedItemId(R.id.navigation_home);
+
+		//		Soporte para la transicion
+
+		getSupportFragmentManager()
+				.beginTransaction()
+				.add(R.id.home_base_frame, HomeFragment.newInstance("param1","param2"))
+				.commit();
+
 	}
 
 	private boolean onNavigationBarItemSelected(@NonNull MenuItem item) {
