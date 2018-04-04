@@ -12,6 +12,7 @@ import com.github.ghostbusters.ghosthouse.R;
 import com.github.ghostbusters.ghosthouse.helper.view.BottomBarHelper;
 import com.github.ghostbusters.ghosthouse.home.fragments.ARFragment;
 import com.github.ghostbusters.ghosthouse.home.fragments.DataFragment;
+import com.github.ghostbusters.ghosthouse.home.fragments.HomeDeviceFragment;
 import com.github.ghostbusters.ghosthouse.home.fragments.HomeFragment;
 import com.github.ghostbusters.ghosthouse.home.fragments.UserFragment;
 
@@ -51,7 +52,7 @@ public class Home extends AppCompatActivity {
 				transaction.replace(R.id.home_base_frame, new ARFragment());
 				return true;
 			case R.id.navigation_home:
-				transaction.replace(R.id.home_base_frame, new HomeFragment());
+				transaction.replace(R.id.home_base_frame, new HomeDeviceFragment());
 				return true;
 			case R.id.navigation_data:
 				transaction.replace(R.id.home_base_frame, new DataFragment());
