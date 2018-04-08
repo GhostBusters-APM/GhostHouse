@@ -8,21 +8,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Toast;
 
-import com.github.ghostbusters.ghosthouse.home.Home;
+import com.github.ghostbusters.ghosthouse.R;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
-import com.jjoe64.graphview.series.OnDataPointTapListener;
-import com.jjoe64.graphview.series.Series;
-import com.jjoe64.graphview.series.DataPointInterface;
-
-
-
-import com.github.ghostbusters.ghosthouse.R;
 
 /**
  * A fragment with a Google +1 button.
@@ -33,13 +24,6 @@ import com.github.ghostbusters.ghosthouse.R;
  * create an instance of this fragment.
  */
 public class DataFragment extends Fragment {
-	// TODO: Rename parameter arguments, choose names that match
-	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-	private static final String ARG_PARAM1 = "param1";
-	private static final String ARG_PARAM2 = "param2";
-	// TODO: Rename and change types of parameters
-	private String mParam1;
-	private String mParam2;
 
 	private OnFragmentInteractionListener mListener;
 
@@ -51,41 +35,33 @@ public class DataFragment extends Fragment {
 	 * Use this factory method to create a new instance of
 	 * this fragment using the provided parameters.
 	 *
-	 * @param param1 Parameter 1.
-	 * @param param2 Parameter 2.
 	 * @return A new instance of fragment DataFragment.
 	 */
 	// TODO: Rename and change types and number of parameters
-	public static DataFragment newInstance(String param1, String param2) {
-		DataFragment fragment = new DataFragment();
-		Bundle args = new Bundle();
-		args.putString(ARG_PARAM1, param1);
-		args.putString(ARG_PARAM2, param2);
-		fragment.setArguments(args);
+	public static DataFragment newInstance() {
+		final DataFragment fragment = new DataFragment();
 		return fragment;
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (getArguments() != null) {
-			mParam1 = getArguments().getString(ARG_PARAM1);
-			mParam2 = getArguments().getString(ARG_PARAM2);
+		if (this.getArguments() != null) {
 		}
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-							 Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+							 final Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View view = inflater.inflate(R.layout.fragment_data, container, false);
+		final View view = inflater.inflate(R.layout.fragment_data, container, false);
 
 //		super.onCreate(savedInstanceState);
 //		view.requestWindowFeature(Window.FEATURE_NO_TITLE);
 //		setContentView(R.layout.activity_main);
 
-		GraphView line_graph = (GraphView) view.findViewById(R.id.graph);
-		LineGraphSeries<DataPoint> line_series =
+		final GraphView line_graph = (GraphView) view.findViewById(R.id.graph);
+		final LineGraphSeries<DataPoint> line_series =
 				new LineGraphSeries<DataPoint>(new DataPoint[]{
 						new DataPoint(0, 100),
 						new DataPoint(1, 500),
@@ -94,8 +70,8 @@ public class DataFragment extends Fragment {
 						new DataPoint(4, 600)
 				});
 
-		StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(line_graph);
-		staticLabelsFormatter.setHorizontalLabels(new String[] {"Jan", "Feb", "March", "April", "May"});
+		final StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(line_graph);
+		staticLabelsFormatter.setHorizontalLabels(new String[]{"Jan", "Feb", "March", "April", "May"});
 		line_graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
 
 		line_graph.addSeries(line_series);
@@ -115,17 +91,17 @@ public class DataFragment extends Fragment {
 	}
 
 	// TODO: Rename method, update argument and hook method into UI event
-	public void onButtonPressed(Uri uri) {
-		if (mListener != null) {
-			mListener.onFragmentInteraction(uri);
+	public void onButtonPressed(final Uri uri) {
+		if (this.mListener != null) {
+			this.mListener.onFragmentInteraction(uri);
 		}
 	}
 
 	@Override
-	public void onAttach(Context context) {
+	public void onAttach(final Context context) {
 		super.onAttach(context);
 		if (context instanceof OnFragmentInteractionListener) {
-			mListener = (OnFragmentInteractionListener) context;
+			this.mListener = (OnFragmentInteractionListener) context;
 		} else {
 			Log.d(DataFragment.class.getName(), "DATA ATTACHED");
 		}
@@ -134,7 +110,7 @@ public class DataFragment extends Fragment {
 	@Override
 	public void onDetach() {
 		super.onDetach();
-		mListener = null;
+		this.mListener = null;
 	}
 
 	/**

@@ -20,33 +20,33 @@ public class Home extends AppCompatActivity {
 
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_home);
+		this.setContentView(R.layout.activity_home);
 
-		BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+		final BottomNavigationView navigation = (BottomNavigationView) this.findViewById(R.id.navigation);
 		navigation.setOnNavigationItemSelectedListener(this::onNavigationBarItemSelected);
 		BottomBarHelper.disableShiftMode(navigation);
 		navigation.setSelectedItemId(R.id.navigation_home);
 
 		//		Soporte para la transicion
 
-		getSupportFragmentManager()
+		this.getSupportFragmentManager()
 				.beginTransaction()
-				.add(R.id.home_base_frame, HomeFragment.newInstance("param1","param2"))
+				.add(R.id.home_base_frame, new HomeFragment())
 				.commit();
 
 	}
 
-	private boolean onNavigationBarItemSelected(@NonNull MenuItem item) {
-		FragmentManager fragmentManager = getSupportFragmentManager();
-		FragmentTransaction transaction = fragmentManager.beginTransaction();
-		boolean result = changeMainView(item, transaction);
+	private boolean onNavigationBarItemSelected(@NonNull final MenuItem item) {
+		final FragmentManager fragmentManager = this.getSupportFragmentManager();
+		final FragmentTransaction transaction = fragmentManager.beginTransaction();
+		final boolean result = this.changeMainView(item, transaction);
 		transaction.commit();
 		return result;
 	}
 
-	private boolean changeMainView(@NonNull MenuItem item, FragmentTransaction transaction) {
+	private boolean changeMainView(@NonNull final MenuItem item, final FragmentTransaction transaction) {
 		switch (item.getItemId()) {
 			case R.id.navigation_ar:
 				transaction.replace(R.id.home_base_frame, new ARFragment());
