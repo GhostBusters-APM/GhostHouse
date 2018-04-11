@@ -1,5 +1,6 @@
 package com.github.ghostbusters.ghosthouse.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -15,6 +16,7 @@ import com.github.ghostbusters.ghosthouse.home.fragments.DataFragment;
 import com.github.ghostbusters.ghosthouse.home.fragments.HomeDeviceFragment;
 import com.github.ghostbusters.ghosthouse.home.fragments.HomeFragment;
 import com.github.ghostbusters.ghosthouse.home.fragments.UserFragment;
+import com.github.ghostbusters.ghosthouse.unity.UnityPlayerActivity;
 
 public class Home extends AppCompatActivity {
 
@@ -50,6 +52,8 @@ public class Home extends AppCompatActivity {
 		switch (item.getItemId()) {
 			case R.id.navigation_ar:
 				transaction.replace(R.id.home_base_frame, new ARFragment());
+				final Intent intent = new Intent(this.getApplicationContext(), UnityPlayerActivity.class);
+				this.startActivity(intent);
 				return true;
 			case R.id.navigation_home:
 				transaction.replace(R.id.home_base_frame, new HomeDeviceFragment());

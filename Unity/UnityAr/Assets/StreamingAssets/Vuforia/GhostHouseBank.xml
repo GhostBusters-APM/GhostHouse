@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
+  <Tracking>
+    <ImageTarget name="qrWiki" size="20.000000 20.066225" />
+    <ImageTarget name="5" size="12.000000 6.054794" />
+    <ImageTarget name="10" size="12.000000 6.351320" />
+    <ImageTarget name="50" size="14.000000 7.559361" />
+    <ImageTarget name="20" size="13.000000 6.901602" />
+  </Tracking>
+</QCARConfig>
