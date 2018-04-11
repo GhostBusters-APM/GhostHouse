@@ -11,12 +11,10 @@ import android.view.MenuItem;
 
 import com.github.ghostbusters.ghosthouse.R;
 import com.github.ghostbusters.ghosthouse.helper.view.BottomBarHelper;
-import com.github.ghostbusters.ghosthouse.home.fragments.ARFragment;
 import com.github.ghostbusters.ghosthouse.home.fragments.DataFragment;
 import com.github.ghostbusters.ghosthouse.home.fragments.HomeDeviceFragment;
 import com.github.ghostbusters.ghosthouse.home.fragments.HomeFragment;
 import com.github.ghostbusters.ghosthouse.home.fragments.UserFragment;
-import com.github.ghostbusters.ghosthouse.unity.UnityPlayerActivity;
 
 public class Home extends AppCompatActivity {
 
@@ -51,8 +49,7 @@ public class Home extends AppCompatActivity {
 	private boolean changeMainView(@NonNull final MenuItem item, final FragmentTransaction transaction) {
 		switch (item.getItemId()) {
 			case R.id.navigation_ar:
-				transaction.replace(R.id.home_base_frame, new ARFragment());
-				final Intent intent = new Intent(this.getApplicationContext(), UnityPlayerActivity.class);
+				final Intent intent = new Intent(this.getApplicationContext(), ArActivityWrapper.class);
 				this.startActivity(intent);
 				return true;
 			case R.id.navigation_home:
