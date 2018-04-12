@@ -27,7 +27,7 @@ public class HomeFragment extends Fragment {
 	public static final String TAG = HomeFragment.class.getSimpleName();
 
 	private static final int ADD_DEVICE_REQUEST_CODE = 1;
-
+	boolean mIsDualPane = false;
 
 	public HomeFragment() {
 		// Required empty public constructor
@@ -36,6 +36,10 @@ public class HomeFragment extends Fragment {
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		if (getResources().getBoolean(R.bool.has_two_panes)) {
+			mIsDualPane = true;
+		}
 	}
 
 	@Override
@@ -60,12 +64,22 @@ public class HomeFragment extends Fragment {
 			@Override
 			public void onClick(final View v) {
 				final DeviceDetailsFragment simpleFragmentB = new DeviceDetailsFragment();
-				HomeFragment.this.getActivity().getSupportFragmentManager()
-						.beginTransaction()
-						.addSharedElement(imageView, ViewCompat.getTransitionName(imageView))
-						.addToBackStack(HomeFragment.TAG)
-						.replace(R.id.home_base_frame, simpleFragmentB)
-						.commit();
+				if (!mIsDualPane) {
+					HomeFragment.this.getActivity().getSupportFragmentManager()
+							.beginTransaction()
+							.addSharedElement(imageView, ViewCompat.getTransitionName(imageView))
+							.addToBackStack(HomeFragment.TAG)
+							.replace(R.id.home_base_frame, simpleFragmentB)
+							.commit();
+				}
+				else{
+					HomeFragment.this.getActivity().getSupportFragmentManager()
+							.beginTransaction()
+							.addSharedElement(imageView, ViewCompat.getTransitionName(imageView))
+							.addToBackStack(HomeFragment.TAG)
+							.replace(R.id.fragment_device_details, simpleFragmentB)
+							.commit();
+				}
 			}
 		});
 
