@@ -18,50 +18,51 @@ import com.github.ghostbusters.ghosthouse.home.fragments.UserFragment;
 public class Home extends AppCompatActivity {
 
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_home);
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.setContentView(R.layout.activity_home);
 
-		BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-		navigation.setOnNavigationItemSelectedListener(this::onNavigationBarItemSelected);
-		BottomBarHelper.disableShiftMode(navigation);
-		navigation.setSelectedItemId(R.id.navigation_home);
+        final BottomNavigationView navigation = (BottomNavigationView) this.findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(this::onNavigationBarItemSelected);
+        BottomBarHelper.disableShiftMode(navigation);
+        navigation.setSelectedItemId(R.id.navigation_home);
 
-		//		Soporte para la transicion
+        //		Soporte para la transicion
 
-		getSupportFragmentManager()
-				.beginTransaction()
-				.add(R.id.home_base_frame, HomeFragment.newInstance("param1","param2"))
-				.commit();
+        this.getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.home_base_frame, HomeFragment.newInstance("param1", "param2"))
+                .commit();
 
-	}
+    }
 
-	private boolean onNavigationBarItemSelected(@NonNull MenuItem item) {
-		FragmentManager fragmentManager = getSupportFragmentManager();
-		FragmentTransaction transaction = fragmentManager.beginTransaction();
-		boolean result = changeMainView(item, transaction);
-		transaction.commit();
-		return result;
-	}
 
-	private boolean changeMainView(@NonNull MenuItem item, FragmentTransaction transaction) {
-		switch (item.getItemId()) {
-			case R.id.navigation_ar:
-				transaction.replace(R.id.home_base_frame, new ARFragment());
-				return true;
-			case R.id.navigation_home:
-				transaction.replace(R.id.home_base_frame, new HomeFragment());
-				return true;
-			case R.id.navigation_data:
-				transaction.replace(R.id.home_base_frame, new DataFragment());
-				return true;
-			case R.id.navigation_user:
-				transaction.replace(R.id.home_base_frame, new UserFragment());
-				return true;
-		}
-		return false;
-	}
+    private boolean onNavigationBarItemSelected(@NonNull final MenuItem item) {
+        final FragmentManager fragmentManager = this.getSupportFragmentManager();
+        final FragmentTransaction transaction = fragmentManager.beginTransaction();
+        final boolean result = this.changeMainView(item, transaction);
+        transaction.commit();
+        return result;
+    }
+
+    private boolean changeMainView(@NonNull final MenuItem item, final FragmentTransaction transaction) {
+        switch (item.getItemId()) {
+            case R.id.navigation_ar:
+                transaction.replace(R.id.home_base_frame, new ARFragment());
+                return true;
+            case R.id.navigation_home:
+                transaction.replace(R.id.home_base_frame, new HomeFragment());
+                return true;
+            case R.id.navigation_data:
+                transaction.replace(R.id.home_base_frame, new DataFragment());
+                return true;
+            case R.id.navigation_user:
+                transaction.replace(R.id.home_base_frame, new UserFragment());
+                return true;
+        }
+        return false;
+    }
 
 
 }

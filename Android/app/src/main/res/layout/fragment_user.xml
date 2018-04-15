@@ -41,6 +41,19 @@
                 android:textAlignment="center"
                 android:textColor="@color/text"
                 android:textSize="22dp" />
+
+            <TextView
+                android:id="@+id/textViewEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_weight="1"
+                android:baselineAligned="false"
+                android:gravity="top|center_horizontal"
+                android:text="Personal Data"
+                android:textAlignment="center"
+                android:textColor="@color/text"
+                android:textSize="22dp" />
         </LinearLayout>
 
         <View

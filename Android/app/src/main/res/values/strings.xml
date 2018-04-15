@@ -21,5 +21,6 @@
     </string-array>
     <string name="title_activity_login">LoginActivity</string>
     <string name="log_in">Log In</string>
-
+    <!--google signin-->
+    <string name="server_client_id">551936819726-rd00cv0sbvs367hb48d9tvtp83a3147m.apps.googleusercontent.com</string>
 </resources>
