@@ -1,5 +1,6 @@
 package com.github.ghostbusters.ghosthouse.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -10,8 +11,8 @@ import android.view.MenuItem;
 
 import com.github.ghostbusters.ghosthouse.R;
 import com.github.ghostbusters.ghosthouse.helper.view.BottomBarHelper;
-import com.github.ghostbusters.ghosthouse.home.fragments.ARFragment;
 import com.github.ghostbusters.ghosthouse.home.fragments.DataFragment;
+import com.github.ghostbusters.ghosthouse.home.fragments.HomeDeviceFragment;
 import com.github.ghostbusters.ghosthouse.home.fragments.HomeFragment;
 import com.github.ghostbusters.ghosthouse.home.fragments.UserFragment;
 
@@ -32,7 +33,7 @@ public class Home extends AppCompatActivity {
 
         this.getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.home_base_frame, HomeFragment.newInstance("param1", "param2"))
+                .add(R.id.home_base_frame, new HomeFragment())
                 .commit();
 
     }
@@ -49,10 +50,11 @@ public class Home extends AppCompatActivity {
     private boolean changeMainView(@NonNull final MenuItem item, final FragmentTransaction transaction) {
         switch (item.getItemId()) {
             case R.id.navigation_ar:
-                transaction.replace(R.id.home_base_frame, new ARFragment());
+                final Intent intent = new Intent(this.getApplicationContext(), ArActivityWrapper.class);
+                this.startActivity(intent);
                 return true;
             case R.id.navigation_home:
-                transaction.replace(R.id.home_base_frame, new HomeFragment());
+                transaction.replace(R.id.home_base_frame, new HomeDeviceFragment());
                 return true;
             case R.id.navigation_data:
                 transaction.replace(R.id.home_base_frame, new DataFragment());
