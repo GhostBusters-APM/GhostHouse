@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import com.github.ghostbusters.ghosthouse.R;
 import com.github.ghostbusters.ghosthouse.home.Home;
@@ -30,6 +31,16 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_login);
 
+
+        final Button login = this.findViewById(R.id.buttonLogIn);
+        this.findViewById(R.id.buttonLogIn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                Log.v(LoginActivity.TAG, "Se ha pulsado el botón de LogIn");
+                final Intent intent = new Intent(LoginActivity.this, Home.class);
+                LoginActivity.this.startActivity(intent);
+            }
+        });
 
         // Set the dimensions of the sign-in button.
         final SignInButton signInButton = this.findViewById(R.id.sign_in_button);
