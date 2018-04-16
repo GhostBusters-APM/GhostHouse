@@ -1,19 +1,21 @@
 package com.github.ghostbusters.ghosthouse.home.fragments;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ghostbusters.ghosthouse.R;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.StaticLabelsFormatter;
@@ -24,9 +26,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * A fragment with a Google +1 button.
@@ -38,7 +41,7 @@ import java.util.List;
  */
 public class DataFragment extends Fragment {
 
-	private OnFragmentInteractionListener mListener;
+	SwipeRefreshLayout mSwipeRefreshLayout;
 
 	public DataFragment() {
 		// Required empty public constructor
@@ -59,8 +62,7 @@ public class DataFragment extends Fragment {
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (this.getArguments() != null) {
-		}
+
 	}
 
 	@Override
@@ -68,46 +70,33 @@ public class DataFragment extends Fragment {
 							 final Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
 		final View view = inflater.inflate(R.layout.fragment_data, container, false);
+		mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.activity_main_swipe_refresh_layout);
+		mSwipeRefreshLayout.setOnRefreshListener(this::refresh);
+
 		return view;
 	}
+
+	private void refresh(){
+		Log.d("Funciona","Funciona");
+		new HttpRequestTask(mSwipeRefreshLayout).execute();
+	}
+
 
 
 	@Override
 	public void onViewCreated(final View view, @Nullable final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-
-		new HttpRequestTask().execute();
-
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
+		new HttpRequestTask(null).execute();
 
 	}
-
-	// TODO: Rename method, update argument and hook method into UI event
-	public void onButtonPressed(final Uri uri) {
-		if (this.mListener != null) {
-			this.mListener.onFragmentInteraction(uri);
-		}
-	}
-
 	@Override
 	public void onAttach(final Context context) {
 		super.onAttach(context);
-		if (context instanceof OnFragmentInteractionListener) {
-			this.mListener = (OnFragmentInteractionListener) context;
-		} else {
-			Log.d(DataFragment.class.getName(), "DATA ATTACHED");
-		}
+
+		Log.d(DataFragment.class.getName(), "DATA ATTACHED");
+
 	}
 
-	@Override
-	public void onDetach() {
-		super.onDetach();
-		this.mListener = null;
-	}
 
 	/**
 	 * This interface must be implemented by activities that contain this
@@ -124,26 +113,29 @@ public class DataFragment extends Fragment {
 		void onFragmentInteraction(Uri uri);
 	}
 
-	private class HttpRequestTask extends AsyncTask<Void, Void, ArrayList<HashMap>> {
+	private class HttpRequestTask extends AsyncTask<Void, Void, List<HourDto>> {
+
+
+		private SwipeRefreshLayout mSwipeRefreshLayout;
+
+		public HttpRequestTask(SwipeRefreshLayout mSwipeRefreshLayout) {
+			this.mSwipeRefreshLayout = mSwipeRefreshLayout;
+		}
+
 		@Override
-		protected ArrayList<HashMap> doInBackground(Void... params) {
+		protected List<HourDto> doInBackground(Void... params) {
 			try {
-				final String url = "http://192.168.0.166:8080/historic";
+				Properties properties = new Properties();;
+				AssetManager assetManager = getActivity().getApplicationContext().getAssets();
+				InputStream inputStream = assetManager.open("config.properties");
+				properties.load(inputStream);
+
+				final String url = properties.getProperty("url");
 				RestTemplate restTemplate = new RestTemplate();
 				restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-				ObjectMapper oMapper = new ObjectMapper();
-				ResponseEntity<Object[]> responseEntity = restTemplate.getForEntity(url, Object[].class);
-				Object[] objects = responseEntity.getBody();
-				ArrayList<HashMap> list = new ArrayList();
-
-				for (int i = 0; i < objects.length; i++){
-					HashMap<String, Object> map = new HashMap<String, Object>();
-					map = oMapper.convertValue(objects[i], HashMap.class);
-					list.add(map);
-				}
-
-
-				return list;
+				ResponseEntity<DataDto> responseEntity = restTemplate.getForEntity(url, DataDto.class);
+				DataDto objects = responseEntity.getBody();
+				return objects.getData();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -151,40 +143,48 @@ public class DataFragment extends Fragment {
 			return null;
 		}
 
-		@RequiresApi(api = Build.VERSION_CODES.N)
 		@Override
-		protected void onPostExecute(ArrayList<HashMap> list) {
-			final GraphView line_graph = (GraphView) DataFragment.this.getView().findViewById(R.id.graph);
+		protected void onPostExecute(List<HourDto> list) {
+			if (list == null){
 
-			List<DataPoint> dataPointsList = new ArrayList<DataPoint>();
-			for (int i = 0; i < list.size()-1; i++){
-				String hour = list.get(i).get("hour").toString();
-				String power = list.get(i).get("power").toString();
+				Toast connectionError =
+						Toast.makeText(getActivity().getApplicationContext(),
+								"Error de conexión con servicio", Toast.LENGTH_SHORT);
 
-				DataPoint dataPoint = new DataPoint(Integer.parseInt(hour), Integer.parseInt(power));
+				connectionError.show();
 
-				dataPointsList.add(dataPoint);
+			}
+			else {
+				if (getView() == null) {
+					return;
+				}
+				final GraphView line_graph = (GraphView) DataFragment.this.getView().findViewById(R.id.graph);
+
+				List<DataPoint> dataPointsList = new ArrayList<>();
+				for (HourDto hour : list) {
+					dataPointsList.add(new DataPoint(hour.getHour(), hour.getPower()));
+				}
+				DataPoint[] dataPoints = new DataPoint[dataPointsList.size()];
+
+				final LineGraphSeries<DataPoint> line_series =
+						new LineGraphSeries<DataPoint>(dataPointsList.toArray(dataPoints));
+
+				final StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(line_graph);
+
+				line_graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
+				line_graph.removeAllSeries();
+
+				line_graph.addSeries(line_series);
+
 			}
 
-			DataPoint[] dataPoints = new DataPoint[dataPointsList.size()];
-			dataPoints = dataPointsList.toArray(dataPoints);
+			if (this.mSwipeRefreshLayout != null) {
+				this.mSwipeRefreshLayout.setRefreshing(false);
+			}
 
-			final LineGraphSeries<DataPoint> line_series =
-					new LineGraphSeries<DataPoint>(dataPoints);
-
-			final StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(line_graph);
-
-
-			staticLabelsFormatter.setHorizontalLabels(new String[]{"0", "1", "2", "3", "4", "5","6","7",
-					"8","9","10","11","12","13","14","15", "16","17","18","19","20","21","22",
-					"23"});
-			line_graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
-
-			line_graph.addSeries(line_series);
+		}
 
 	}
-
-}
 
 
 }
