@@ -1,54 +1,49 @@
 package com.github.ghostbusters.ghosthouse.newdevice;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
 
 import com.github.ghostbusters.ghosthouse.R;
 
-import java.util.Locale;
-
 public class NewDevice
         extends AppCompatActivity
-        implements NewDeviceFragment.OnNewDeviceListener{
+        implements NewDeviceFragment.OnNewDeviceListener {
 
     public static final String DEVICE_ID_RESULT = "device-id";
+    public static final String DEVICE_NAME_RESULT = "device-name";
 
     private static final String TAG = "NewDevice";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_device);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        this.setContentView(R.layout.activity_new_device);
+        final Toolbar toolbar = this.findViewById(R.id.toolbar);
+        this.setSupportActionBar(toolbar);
 
-        ActionBar supportActionBar = getSupportActionBar();
+        final ActionBar supportActionBar = this.getSupportActionBar();
         if (supportActionBar != null) {
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+
     }
 
-    public void onNewDevice(int deviceId) {
-        Intent result = new Intent();
-        result.putExtra(DEVICE_ID_RESULT, deviceId);
-        setResult(RESULT_OK, result);
+    @Override
+    public void onNewDevice(final int deviceId, final String deviceName) {
+        Log.d(NewDevice.TAG, String.valueOf(deviceId));
+        final Intent result = new Intent();
+        result.putExtra(NewDevice.DEVICE_ID_RESULT, deviceId);
+        result.putExtra(NewDevice.DEVICE_NAME_RESULT, deviceName);
+        this.setResult(Activity.RESULT_OK, result);
 
-        finish();
+        this.finish();
     }
 
     /*
@@ -58,7 +53,7 @@ public class NewDevice
      * https://stackoverflow.com/a/39718652/8923487
      */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 super.onBackPressed();

@@ -31,6 +31,20 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_login);
 
+//        final int check = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+//        if (check == ConnectionResult.SUCCESS) {
+//            Log.i(LoginActivity.TAG, "Google Play Services SUCCESS");
+//        } else if (check == ConnectionResult.SERVICE_MISSING) {
+//            Log.i(LoginActivity.TAG, "Google Play Services SERVICE_MISSING");
+//        } else if (check == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED) {
+//            Log.i(LoginActivity.TAG, "Google Play Services SERVICE_VERSION_UPDATE_REQUIRED");
+//        } else if (check == ConnectionResult.SERVICE_DISABLED) {
+//            Log.i(LoginActivity.TAG, "Google Play Services SERVICE_DISABLED");
+//        } else if (check == ConnectionResult.SERVICE_INVALID) {
+//            Log.i(LoginActivity.TAG, "Google Play Services SERVICE_INVALID");
+//        } else {
+//            Log.i(LoginActivity.TAG, "Google Play Services returned an unknown value");
+//        }
 
         final Button login = this.findViewById(R.id.buttonLogIn);
         this.findViewById(R.id.buttonLogIn).setOnClickListener(new View.OnClickListener() {
