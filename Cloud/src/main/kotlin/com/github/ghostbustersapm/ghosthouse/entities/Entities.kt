@@ -5,27 +5,52 @@ import org.springframework.stereotype.Repository
 import java.time.Instant
 import javax.persistence.*
 
-@Entity
-@Table(name="device")
-data class Device(
-        @Id @GeneratedValue(strategy=GenerationType.AUTO) val deviceId: Long? = null,
-        val userId : String= "",
-        val name: String = "",
-        val latitude: String = "",
-        val longitude: String = "",
-        val type: Int= 1,
-        val state: Int = 1)
-
-@Repository
-interface DeviceRepository : JpaRepository<Device, Long>
+enum class Type { SWITCH }
 
 @Entity
-@Table(name="device_power_data")
-data class DevicePowerData(
-        @Id @GeneratedValue(strategy=GenerationType.AUTO) val devicePowerDataId: Long? = null,
-        @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "device_id") val device: Device? = null,
-        val instant: Instant = Instant.now(),
-        val value: Double = 1.0)
+@Table(name = "device")
+@Inheritance
+@DiscriminatorColumn(name = "TYPE")
+abstract class Device {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    open var deviceId: Long? = null
+    open var userId: String = ""
+    open var name: String = ""
+    open var latitude: String = ""
+    open var longitude: String = ""
+
+}
+
+@Entity
+@DiscriminatorValue("S")
+class DeviceSwitch() : Device() {
+    var state: Boolean = false
+}
+
 
 @Repository
-interface DevicePowerDataRepository : JpaRepository<DevicePowerData, Long>
+interface DeviceRepository : JpaRepository<Device, Long> {
+
+    fun findByUserId(userId: String): List<Device>;
+    fun findByUserIdAndDeviceId(userId: String, deviceId: Long): List<Device>
+}
+
+@Entity
+@Table(name = "device_power_data")
+class DevicePowerData {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    var devicePowerDataId: Long? = null
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "device_id")
+    var device: Device? = null
+    var instant: Instant = Instant.now()
+    var value: Double = 0.0
+
+}
+
+@Repository
+interface DevicePowerDataRepository : JpaRepository<DevicePowerData, Long> {
+    fun getByDevice_DeviceIdOrderByInstant(deviceId: Long): List<DevicePowerData>
+}
