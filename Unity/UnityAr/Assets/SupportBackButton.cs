@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SupportBackScript : MonoBehaviour
+public class SupportBackButton : MonoBehaviour
 {
     void FixedUpdate()
     {
