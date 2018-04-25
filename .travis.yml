@@ -8,7 +8,14 @@ android:
 
 jdk:
 - oraclejdk8
-  
+env:
+  global:
+  - USER="GhostBusters-APM"
+  - EMAIL="GhostBusters-APM@github.com"
+  - REPO="GhostHouseBuilds"
+  - FILES="build/apk/*"
+  - GH_REPO="github.com/${USER}/${REPO}.git"
+
 before_script:
   
   - wget http://services.gradle.org/distributions/gradle-4.4-bin.zip
@@ -22,3 +29,16 @@ before_script:
   
 script:
   - gradle assemble
+
+after_success:
+  - MESSAGE=$(git log --format=%B -n 1 $TRAVIS_COMMIT)
+  - git clone git://${GH_REPO}
+  - mv -f ${FILES} ${REPO}
+  - cd ${REPO}
+  - git remote
+  - git config user.email ${EMAIL}
+  - git config user.name ${USER}
+  - git rm *
+  - git add ${FILES}
+  - git commit -m ${MESSAGE}
+  - git push "https://${TRAVIS_SECURE_TOKEN_NAME}@${GH_REPO}" master > /dev/null 2>&1
