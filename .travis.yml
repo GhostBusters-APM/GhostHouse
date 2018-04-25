@@ -13,11 +13,10 @@ env:
   - USER="GhostBusters-APM"
   - EMAIL="GhostBusters-APM@github.com"
   - REPO="GhostHouseBuilds"
-  - FILES="./build/apk/*"
+  - FILES=".app/build/output/apk/*"
   - GH_REPO="github.com/${USER}/${REPO}.git"
 
 before_script:
-  - sudo apt-get install tree
   - wget http://services.gradle.org/distributions/gradle-4.4-bin.zip
   - unzip -qq gradle-4.4-bin.zip
   - export GRADLE_HOME=$PWD/gradle-4.4
@@ -31,7 +30,6 @@ script:
   - gradle assemble
 
 after_success:
-  - tree -d 
   - MESSAGE=$(git log --format=%B -n 1 $TRAVIS_COMMIT)
   - git clone git://${GH_REPO}
   - mv -f ${FILES} ${REPO}
