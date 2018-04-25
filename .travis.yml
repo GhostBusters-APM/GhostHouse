@@ -34,7 +34,7 @@ after_success:
   - git clone git://${GH_REPO}
   
   - cd ${REPO}
-  - git rm ./*
+  - git rm -r ./*
   - cd ../
   - mv -f ${FILES} ${REPO}
   - cd ${REPO}
