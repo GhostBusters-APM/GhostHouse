@@ -17,7 +17,7 @@ env:
   - GH_REPO="github.com/${USER}/${REPO}.git"
 
 before_script:
-  
+  - sudo apt-get install tree
   - wget http://services.gradle.org/distributions/gradle-4.4-bin.zip
   - unzip -qq gradle-4.4-bin.zip
   - export GRADLE_HOME=$PWD/gradle-4.4
