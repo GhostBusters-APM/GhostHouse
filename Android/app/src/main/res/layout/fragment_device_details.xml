@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F6">
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="8dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent">
+
+        <!-- <android.support.v7.widget.Toolbar
+            android:id="@+id/my_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme" /> -->
+
+
+        <ImageView
+            android:id="@+id/fragment_b_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:contentDescription="Item Details"
+            android:padding="20dp"
+            android:scaleType="center"
+            android:src="@drawable/computer"
+            android:transitionName="@string/simple_fragment_transition"
+            tools:ignore="UnusedAttribute" />
+
+        <Switch
+            android:id="@+id/switch13"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:switchMinWidth="150dp"
+            android:thumbTint="@color/colorPrimary"
+            android:trackTint="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:text="Device Data"
+            android:textAlignment="center"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="211dp">
+
+            <TextView
+                android:id="@+id/textViewPowerMode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Power Mode "
+                android:textColor="@android:color/background_dark"
+                android:textSize="24sp"
+                tools:text="Power Mode " />
+
+            <TextView
+                android:id="@+id/textViewPowerMode1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="sds"
+                android:text="Energy Saving"
+                android:textSize="15sp"
+                tools:text="Energy Saving" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="118dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textViewPowerActiveHours"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Active Hours"
+                    android:textColor="@android:color/background_dark"
+                    android:textSize="24sp"
+                    tools:text="Active Hours" />
+
+                <Switch
+                    android:id="@+id/switchActiveHours"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:splitTrack="false"
+                    android:switchMinWidth="50dp"
+                    android:thumbTint="@android:color/darker_gray" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textViewPowerActiveHours1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="sds"
+                android:text="10:00 - 17:00"
+                android:textSize="16sp"
+                tools:text="10:00 - 17:00" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="385dp">
+
+            <TextView
+                android:id="@+id/textViewBrand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Brand"
+                android:textColor="@android:color/background_dark"
+                android:textSize="24sp"
+                tools:text="Brand" />
+
+            <TextView
+                android:id="@+id/textViewBrand1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="sds"
+                android:text="Philips"
+                android:textSize="16sp"
+                tools:text="Philips" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="306dp">
+
+            <TextView
+                android:id="@+id/textViewModel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Model"
+                android:textColor="@android:color/background_dark"
+                android:textSize="24sp"
+                tools:text="Model" />
+
+            <TextView
+                android:id="@+id/textViewModel1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="sds"
+                android:text="OGTMSJDOR"
+                android:textSize="16sp"
+                tools:text="OGTMSJDOR" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

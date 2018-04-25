@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">GhostHouse</string>
+    <string name="title_home">Home</string>
+    <string name="title_ra">AR</string>
+    <string name="title_cloud">Data</string>
+    <string name="title_account">User</string>
+    <string name="title_activity_new_device">New Device</string>
+    <string name="device_name_tv_str">Name</string>
+    <string name="device_name_et_hint_str">Device name</string>
+    <string name="avilable_devices_tv_str">Available devices</string>
+    <string name="add_device_but_str">Add</string>
+    <string name="loading_devices_tv_str">Searching for available devices…</string>
+
+    <string name="simple_fragment_transition">simple_fragment_transition</string>
+
+    <string-array name="available_devices_array">
+        <item>Device 0</item>
+        <item>Device 1</item>
+        <item>Device 2</item>
+        <item>Device 3</item>
+    </string-array>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="log_in">Log In</string>
+    <!--google signin-->
+    <string name="server_client_id">551936819726-rd00cv0sbvs367hb48d9tvtp83a3147m.apps.googleusercontent.com</string>
+    <string name="latitude_label" />
+    <string name="longitude_label" />
+</resources>

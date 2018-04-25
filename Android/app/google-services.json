@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "551936819726",
+    "firebase_url": "https://ghosthouse-1522853432065.firebaseio.com",
+    "project_id": "ghosthouse-1522853432065",
+    "storage_bucket": "ghosthouse-1522853432065.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:551936819726:android:5c385d870cb21b5d",
+        "android_client_info": {
+          "package_name": "com.github.ghostbusters.ghosthouse"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "551936819726-o8b1fffgb6m5btjoh0cta35kmoasar2k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.github.ghostbusters.ghosthouse",
+            "certificate_hash": "1b4302c3d531904d177b1b66452a2dabbef52685"
+          }
+        },
+        {
+          "client_id": "551936819726-vg9gug5f9el2c0cpcfbbcfbfcjs58gci.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "551936819726-rd00cv0sbvs367hb48d9tvtp83a3147m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0CKxz7kl3RLF-3bNB75FS6AvJ7fJO1Ms"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "551936819726-vg9gug5f9el2c0cpcfbbcfbfcjs58gci.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
