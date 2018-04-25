@@ -41,6 +41,6 @@ after_success:
   - git remote
   - git config user.email ${EMAIL}
   - git config user.name ${USER}
-  - git add ${FILES}
+  - git add -A
   - git commit -m "${MESSAGE}"
   - git push "https://${TRAVIS_SECURE_TOKEN_NAME}@${GH_REPO}" master > /dev/null 2>&1
