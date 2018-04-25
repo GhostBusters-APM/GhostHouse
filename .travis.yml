@@ -6,11 +6,11 @@ android:
     - build-tools-27.0.3
     - android-27
 
-  jdk:
-  - oraclejdk8
-    
-  before_script:
-    - cd Android
-    
-  script:
-    - gradle assemble
+jdk:
+- oraclejdk8
+  
+before_script:
+  - cd Android
+  
+script:
+  - gradle assemble
