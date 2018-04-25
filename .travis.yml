@@ -7,9 +7,15 @@ android:
     - android-27
 
 jdk:
-- oraclejdk9
+- oraclejdk8
   
 before_script:
+  - wget http://services.gradle.org/distributions/gradle-4.4-bin.zip
+  - unzip -qq gradle-4.4-bin.zip
+  - export GRADLE_HOME=$PWD/gradle-4.4
+  - export PATH=$GRADLE_HOME/bin:$PATH
+  # just to test gradle version, against our provided one
+  - gradle -v
   - cd Android
   
 script:
