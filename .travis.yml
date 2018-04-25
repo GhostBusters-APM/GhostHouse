@@ -13,7 +13,7 @@ env:
   - USER="GhostBusters-APM"
   - EMAIL="GhostBusters-APM@github.com"
   - REPO="GhostHouseBuilds"
-  - FILES="./app/build/output/apk/*"
+  - FILES="./app/build/outputs/apk/*"
   - GH_REPO="github.com/${USER}/${REPO}.git"
 
 before_script:
