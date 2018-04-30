@@ -45,7 +45,8 @@ class DevicePowerData {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "device_id")
     var device: Device? = null
-    var instant: Instant = Instant.now()
+    var from: Instant = Instant.now()
+    var to: Instant = Instant.now()
     var value: Double = 0.0
 
 }
