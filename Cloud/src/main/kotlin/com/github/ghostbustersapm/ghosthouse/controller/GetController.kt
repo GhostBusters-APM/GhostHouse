@@ -7,6 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import java.time.Instant
 import java.time.LocalTime
+import java.util.Locale
+import java.text.SimpleDateFormat
+
+
 
 @RestController
 class GetController {
@@ -42,18 +46,21 @@ class GetController {
         return deviceService.createDevice(data.userId, data.name, data.latitude, data.longitude, data.type, data.state);
     }
 
-    data class DevicePowerDto(val deviceID: Long, val value: Double)
+    data class DevicePowerDto(val deviceID: Long, val value: Double, val from:String, val to:String)
 
     @PostMapping("devicePower")
     fun createDevicePower(@RequestBody data: DevicePowerDto): DevicePowerData {
-        return deviceService.registerPower(data.deviceID, data.value);
+        val sdf = SimpleDateFormat("yyyyMMddHHmmss")
+        val from =sdf.parse(data.from).toInstant()// all done
+        val to = sdf.parse(data.to).toInstant()
+        return deviceService.registerPower(data.deviceID, data.value,from,to);
     }
 
-    data class DevicePowerDtoResponse(val id: Long, val value: Double, val isntant: Instant)
+    data class DevicePowerDtoResponse(val id: Long, val value: Double, val from: Instant)
 
     @GetMapping("devicePower")
     fun getDevicePower(@RequestParam userId: String, @RequestParam deviceId: Long): List<DevicePowerDtoResponse> {
-        return deviceService.getPower(userId, deviceId).map { DevicePowerDtoResponse(it.devicePowerDataId!!, it.value, it.instant) }
+        return deviceService.getPower(userId, deviceId).map { DevicePowerDtoResponse(it.devicePowerDataId!!, it.value, it.from) }
     }
 
 

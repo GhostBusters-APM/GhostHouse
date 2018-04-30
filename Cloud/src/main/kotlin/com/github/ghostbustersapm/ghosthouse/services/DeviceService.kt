@@ -3,6 +3,7 @@ package com.github.ghostbustersapm.ghosthouse.services
 import com.github.ghostbustersapm.ghosthouse.entities.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.time.Instant
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 import javax.transaction.Transactional
@@ -38,10 +39,12 @@ class DeviceService {
     }
 
 
-    fun registerPower(deviceId: Long, value: Double): DevicePowerData {
+    fun registerPower(deviceId: Long, value: Double,from: Instant,to:Instant): DevicePowerData {
         var powerData = DevicePowerData()
         powerData.device = deviceRepository.findById(deviceId).get()
         powerData.value = value
+        powerData.from = from;
+        powerData.to = to;
         return devicePowerDataRepository.save(powerData)
     }
 
