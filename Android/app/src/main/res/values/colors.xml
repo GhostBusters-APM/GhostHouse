@@ -7,4 +7,5 @@
     <color name="colorGray">#eeeeee</color>
     <color name="colorRed">#990000</color>
     <color name="text">#8492a6</color>
+    <color name="colorDark">#33343B</color>
 </resources>

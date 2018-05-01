@@ -2,11 +2,21 @@ package com.github.ghostbusters.ghosthouse.home.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +38,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
+
+import static com.github.ghostbusters.ghosthouse.home.Home.KEY_NAME;
+import static com.github.ghostbusters.ghosthouse.home.Home.PREFS_NAME;
 
 /**
  * A fragment with a Google +1 button.
@@ -90,6 +104,8 @@ public class UserFragment extends Fragment implements GoogleApiClient.OnConnecti
         super.onStop();
     }
 
+
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,10 +121,32 @@ public class UserFragment extends Fragment implements GoogleApiClient.OnConnecti
     }
 
     @Override
-    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
+
+        SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME,getActivity().MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        final boolean isNightMode = settings.getBoolean(KEY_NAME, false);
+        Log.d(TAG,String.format("¿Night Mode? %s", String.valueOf(isNightMode)));
+
+        int theme;
+
+        if (isNightMode){
+            theme=R.style.AppDarkTheme;
+        }else{
+            theme=R.style.AppTheme;
+        }
+        Log.v(UserFragment.TAG, String.valueOf(theme));
+        //Set the theme
+        // create ContextThemeWrapper from the original Activity Context with the custom theme
+        final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(),theme);
+        // clone the inflater using the ContextThemeWrapper
+        LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
+        ////////////////
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.fragment_user, container, false);
+        final View view = localInflater.inflate(R.layout.fragment_user, container, false);
+
+
 
 
         final TextView name = (TextView) view.findViewById(R.id.textView);
@@ -123,14 +161,55 @@ public class UserFragment extends Fragment implements GoogleApiClient.OnConnecti
             final String personEmail = acct.getEmail();
             final String personId = acct.getId();
             final Uri personPhoto = acct.getPhotoUrl();
+            String personPhotoUrl = acct.getPhotoUrl().toString();
 
             name.setText(personName);
             email.setText(personEmail);
             Log.v(UserFragment.TAG, personPhoto.toString());
-//            pic.setImageURI(personPhoto);
-            Picasso.with(view.getContext()).load(personPhoto).resize(50, 50)
-                    .centerCrop().into(pic);
+//            pic.setImageBitmap(
+//                    decodeSampledBitmapFromResource(getResources(), R.id.imageView,pic.getMaxWidth(), pic.getMaxHeight()));
+//            Glide.with(getContext()).load(personPhotoUrl).into(pic);
+            Transformation transformation = new Transformation() {
+                @Override
+                public Bitmap transform(Bitmap source) {
+                    int size = Math.min(source.getWidth(), source.getHeight());
 
+                    int x = (source.getWidth() - size) / 2;
+                    int y = (source.getHeight() - size) / 2;
+
+                    Bitmap squaredBitmap = Bitmap.createBitmap(source, x, y, size, size);
+                    if (squaredBitmap != source) {
+                        source.recycle();
+                    }
+
+                    Bitmap bitmap = Bitmap.createBitmap(size, size, source.getConfig());
+
+                    Canvas canvas = new Canvas(bitmap);
+                    Paint paint = new Paint();
+                    BitmapShader shader = new BitmapShader(squaredBitmap,
+                            BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP);
+                    paint.setShader(shader);
+                    paint.setAntiAlias(true);
+
+                    float r = size / 2f;
+                    canvas.drawCircle(r, r, r, paint);
+
+                    squaredBitmap.recycle();
+                    return bitmap;
+                }
+
+                @Override
+                public String key() {
+                    return "circle";
+                }
+            };
+
+            Picasso.with(getContext())
+                    .load(personPhoto)
+                    .placeholder(R.drawable.ic_person_black_50dp)
+                    .error(R.drawable.ic_person_black_50dp)
+                    .transform(transformation)
+                    .into(pic);
 
         }
 
@@ -157,30 +236,49 @@ public class UserFragment extends Fragment implements GoogleApiClient.OnConnecti
         });
 
         final Switch switch1 = (Switch) view.findViewById(R.id.switch1);
+        switch1.setChecked(isNightMode);
         switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
                 if (isChecked) {
                     // The toggle is enabled
                     Log.v(UserFragment.TAG, "Switch activado");
+                    editor.putBoolean(KEY_NAME, true);
+                    editor.commit();
+                    mListener.setGhostTheme(R.style.AppDarkTheme);
+//                    getActivity().setTheme(R.style.AppDarkTheme);
+
+
                 } else {
                     // The toggle is disabled
                     Log.v(UserFragment.TAG, "Switch desactivado");
+                    editor.putBoolean(KEY_NAME, false);
+                    editor.commit();
+                    mListener.setGhostTheme(R.style.AppTheme);
+//                    getActivity().setTheme(R.style.AppTheme);
                 }
+
+//                getActivity().recreate();
+//
             }
         });
 
         final CheckBox checkbox1 = (CheckBox) view.findViewById(R.id.checkBox1);
+
         checkbox1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
+
                 if (isChecked) {
                     // The toggle is enabled
                     Log.v(UserFragment.TAG, "Checkbox1 activado");
+
                 } else {
                     // The toggle is disabled
                     Log.v(UserFragment.TAG, "Checkbox1 desactivado");
+
                 }
+
             }
         });
 
@@ -249,6 +347,6 @@ public class UserFragment extends Fragment implements GoogleApiClient.OnConnecti
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+        int setGhostTheme(int t);
     }
-
 }
