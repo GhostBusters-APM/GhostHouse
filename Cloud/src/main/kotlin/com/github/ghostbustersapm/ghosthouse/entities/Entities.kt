@@ -45,7 +45,7 @@ class DevicePowerData {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "device_id")
     var device: Device? = null
-    var from: Instant = Instant.now()
+    var instantFrom: Instant = Instant.now()
     var to: Instant = Instant.now()
     var value: Double = 0.0
 
@@ -53,5 +53,5 @@ class DevicePowerData {
 
 @Repository
 interface DevicePowerDataRepository : JpaRepository<DevicePowerData, Long> {
-    fun getByDevice_DeviceIdOrderByInstant(deviceId: Long): List<DevicePowerData>
+    fun getByDevice_DeviceIdOrderByInstantFrom(deviceId: Long): List<DevicePowerData>
 }

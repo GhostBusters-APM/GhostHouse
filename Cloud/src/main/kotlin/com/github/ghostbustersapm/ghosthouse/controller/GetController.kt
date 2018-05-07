@@ -60,7 +60,7 @@ class GetController {
 
     @GetMapping("devicePower")
     fun getDevicePower(@RequestParam userId: String, @RequestParam deviceId: Long): List<DevicePowerDtoResponse> {
-        return deviceService.getPower(userId, deviceId).map { DevicePowerDtoResponse(it.devicePowerDataId!!, it.value, it.from) }
+        return deviceService.getPower(userId, deviceId).map { DevicePowerDtoResponse(it.devicePowerDataId!!, it.value, it.instantFrom) }
     }
 
 

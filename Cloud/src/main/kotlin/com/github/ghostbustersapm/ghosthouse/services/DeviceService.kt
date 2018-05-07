@@ -43,14 +43,14 @@ class DeviceService {
         var powerData = DevicePowerData()
         powerData.device = deviceRepository.findById(deviceId).get()
         powerData.value = value
-        powerData.from = from;
+        powerData.instantFrom = from;
         powerData.to = to;
         return devicePowerDataRepository.save(powerData)
     }
 
 
     fun getPower(userId: String, deviceId: Long): List<DevicePowerData> {
-        return devicePowerDataRepository.getByDevice_DeviceIdOrderByInstant(deviceId);
+        return devicePowerDataRepository.getByDevice_DeviceIdOrderByInstantFrom(deviceId);
     }
 
     fun getDevices(userId: String, deviceId: Long): List<Device> {
