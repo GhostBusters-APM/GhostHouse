@@ -21,7 +21,7 @@ public class itemClick : MonoBehaviour {
             if (Physics.Raycast(raycast, out raycastHit))
             {
                 Debug.Log("Something Hit");
-                if (raycastHit.collider.name == "Cube")
+                if (raycastHit.collider.name == "Switch")
                 {
                     Debug.Log("Clicked changing color");
                     GetComponent<Renderer>().material.color=change ? color1 : color2;
