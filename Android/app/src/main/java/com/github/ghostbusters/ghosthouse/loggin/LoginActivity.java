@@ -28,6 +28,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_login);
 
@@ -59,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         // Set the dimensions of the sign-in button.
         final SignInButton signInButton = this.findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
+//        signInButton.setStyle(R.style.googleButtonTheme,R.style.googleButtonTheme);
         this.findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
 
             private void signIn() {

@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -121,7 +122,7 @@ public class UserFragment extends Fragment implements GoogleApiClient.OnConnecti
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
 
         SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME,getActivity().MODE_PRIVATE);
@@ -132,19 +133,14 @@ public class UserFragment extends Fragment implements GoogleApiClient.OnConnecti
         int theme;
 
         if (isNightMode){
-            theme=R.style.AppDarkTheme;
+//            theme=R.style.AppDarkTheme;
+                theme=0;
         }else{
             theme=R.style.AppTheme;
         }
         Log.v(UserFragment.TAG, String.valueOf(theme));
-        //Set the theme
-        // create ContextThemeWrapper from the original Activity Context with the custom theme
-        final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(),theme);
-        // clone the inflater using the ContextThemeWrapper
-        LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
-        ////////////////
-        // Inflate the layout for this fragment
-        final View view = localInflater.inflate(R.layout.fragment_user, container, false);
+
+        final View view = inflater.inflate(R.layout.fragment_user, container, false);
 
 
 
@@ -245,7 +241,8 @@ public class UserFragment extends Fragment implements GoogleApiClient.OnConnecti
                     Log.v(UserFragment.TAG, "Switch activado");
                     editor.putBoolean(KEY_NAME, true);
                     editor.commit();
-                    mListener.setGhostTheme(R.style.AppDarkTheme);
+//                    mListener.setGhostTheme(R.style.AppDarkTheme);
+                    mListener.setGhostTheme(AppCompatDelegate.MODE_NIGHT_YES);
 //                    getActivity().setTheme(R.style.AppDarkTheme);
 
 
@@ -254,7 +251,8 @@ public class UserFragment extends Fragment implements GoogleApiClient.OnConnecti
                     Log.v(UserFragment.TAG, "Switch desactivado");
                     editor.putBoolean(KEY_NAME, false);
                     editor.commit();
-                    mListener.setGhostTheme(R.style.AppTheme);
+//                    mListener.setGhostTheme(R.style.AppTheme);
+                    mListener.setGhostTheme(AppCompatDelegate.MODE_NIGHT_NO);
 //                    getActivity().setTheme(R.style.AppTheme);
                 }
 
@@ -263,38 +261,7 @@ public class UserFragment extends Fragment implements GoogleApiClient.OnConnecti
             }
         });
 
-        final CheckBox checkbox1 = (CheckBox) view.findViewById(R.id.checkBox1);
 
-        checkbox1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
-
-                if (isChecked) {
-                    // The toggle is enabled
-                    Log.v(UserFragment.TAG, "Checkbox1 activado");
-
-                } else {
-                    // The toggle is disabled
-                    Log.v(UserFragment.TAG, "Checkbox1 desactivado");
-
-                }
-
-            }
-        });
-
-        final CheckBox checkbox2 = (CheckBox) view.findViewById(R.id.checkBox2);
-        checkbox2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
-                if (isChecked) {
-                    // The toggle is enabled
-                    Log.v(UserFragment.TAG, "Checkbox2 activado");
-                } else {
-                    // The toggle is disabled
-                    Log.v(UserFragment.TAG, "Checkbox2 desactivado");
-                }
-            }
-        });
 
         return view;
     }

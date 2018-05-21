@@ -16,6 +16,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -47,11 +48,15 @@ public class Home extends AppCompatActivity implements UserFragment.OnFragmentIn
     protected void onCreate(final Bundle savedInstanceState) {
         // Restore preferences
         PackageInfo versionInfo = getPackageInfo();
+
+
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         boolean isNightMode = settings.getBoolean(KEY_NAME, false);
         boolean mapLicenseAccept = settings.getBoolean(EULA+ versionInfo.versionCode, false);
         if(isNightMode){
-            setTheme(R.style.AppDarkTheme);
+//            setTheme(R.style.AppDarkTheme);
+            AppCompatDelegate.setDefaultNightMode(
+                    AppCompatDelegate.MODE_NIGHT_YES);
         }
         Log.d(TAG,String.format("¿Night Mode? %s", String.valueOf(isNightMode)));
         super.onCreate(savedInstanceState);
@@ -222,6 +227,7 @@ public class Home extends AppCompatActivity implements UserFragment.OnFragmentIn
     @Override
     public int setGhostTheme(int t) {
         Log.d(TAG,String.format("¿Theme? %s", String.valueOf(t)));
+        AppCompatDelegate.setDefaultNightMode(t);
         setTheme(t);
         fromUserFragment = true;
         recreate();

@@ -2,6 +2,7 @@ package com.github.ghostbusters.ghosthouse.newdevice;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,9 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.github.ghostbusters.ghosthouse.R;
+
+import static com.github.ghostbusters.ghosthouse.home.Home.KEY_NAME;
+import static com.github.ghostbusters.ghosthouse.home.Home.PREFS_NAME;
 
 public class NewDevice
         extends AppCompatActivity
@@ -22,6 +26,13 @@ public class NewDevice
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
+
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        boolean isNightMode = settings.getBoolean(KEY_NAME, false);
+        if(isNightMode){
+//            setTheme(R.style.AppDarkTheme);
+        }
+
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_new_device);
         final Toolbar toolbar = this.findViewById(R.id.toolbar);

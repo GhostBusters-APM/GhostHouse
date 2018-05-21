@@ -1,14 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTint="@color/colorPrimary"
+    android:backgroundTintMode="screen"
     tools:context="com.github.ghostbusters.ghosthouse.loggin.LoginActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="30dp"
+            android:scaleType="fitStart"
+            app:srcCompat="@drawable/iconapp" />
 
         <Button
             android:id="@+id/buttonLogIn"
@@ -31,7 +42,11 @@
             android:id="@+id/sign_in_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center_horizontal" />
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:backgroundTint="@color/common_google_signin_btn_tint">
+
+
+        </com.google.android.gms.common.SignInButton>
     </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>
