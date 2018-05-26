@@ -2,6 +2,7 @@ package com.github.ghostbusters.ghosthouse.home.fragments;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,6 +18,16 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.github.ghostbusters.ghosthouse.R;
+import com.github.ghostbusters.ghosthouse.db.AppDatabase;
+import com.github.ghostbusters.ghosthouse.db.DevicePowerDataDao;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.DataPoint;
@@ -77,7 +88,6 @@ public class DataFragment extends Fragment {
 	}
 
 	private void refresh(){
-		Log.d("Funciona","Funciona");
 		new HttpRequestTask(mSwipeRefreshLayout).execute();
 	}
 
@@ -158,23 +168,66 @@ public class DataFragment extends Fragment {
 				if (getView() == null) {
 					return;
 				}
-				final GraphView line_graph = (GraphView) DataFragment.this.getView().findViewById(R.id.graph);
 
-				List<DataPoint> dataPointsList = new ArrayList<>();
+				LineChart chart = (LineChart) DataFragment.this.getView().findViewById(R.id.lineChart);
+
+				List<Entry> entriesLineChart = new ArrayList<Entry>();
 				for (HourDto hour : list) {
-					dataPointsList.add(new DataPoint(hour.getHour(), hour.getPower()));
+					entriesLineChart.add(new Entry(hour.getHour(), hour.getPower()));
 				}
-				DataPoint[] dataPoints = new DataPoint[dataPointsList.size()];
+				LineDataSet dataSet = new LineDataSet(entriesLineChart, "Fridge");
+				dataSet.setColor(Color.rgb(0, 128, 96));
 
-				final LineGraphSeries<DataPoint> line_series =
-						new LineGraphSeries<DataPoint>(dataPointsList.toArray(dataPoints));
+				List<Entry> entriesLineChart1 = new ArrayList<Entry>();
+				for (HourDto hour : list) {
+					entriesLineChart1.add(new Entry(hour.getHour(), (int) Math.floor(Math.random()*25+1)));
+				}
+				LineDataSet dataSet1 = new LineDataSet(entriesLineChart1, "TV");
+				dataSet1.setColor(Color.rgb(51, 153, 255));
 
-				final StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(line_graph);
+				LineData lineData = new LineData();
+				lineData.addDataSet(dataSet);
+				lineData.addDataSet(dataSet1);
+				chart.setData(lineData);
+				chart.getDescription().setText("Daily consumption");
+				chart.invalidate();
 
-				line_graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
-				line_graph.removeAllSeries();
 
-				line_graph.addSeries(line_series);
+				List<PieEntry> entriesPieChart = new ArrayList<>();
+
+				entriesPieChart.add(new PieEntry(18.5f, "TV"));
+				entriesPieChart.add(new PieEntry(26.7f, "Fridge"));
+				entriesPieChart.add(new PieEntry(24.0f, "Washing machine"));
+				entriesPieChart.add(new PieEntry(30.8f, "Microwave"));
+
+
+				PieChart pieChart = (PieChart) DataFragment.this.getView().findViewById(R.id.pieChart);
+				PieDataSet set = new PieDataSet(entriesPieChart, "Devices");
+				set.setColors(Color.rgb(51, 153, 255), Color.rgb(0, 128, 96), Color.rgb(255, 128, 128),
+						Color.rgb(127,127,127));
+				PieData pieChartData = new PieData(set);
+				pieChart.setData(pieChartData);
+				pieChart.getDescription().setText("% per devide");
+				pieChart.invalidate(); // refresh
+
+
+				//final GraphView line_graph = (GraphView) DataFragment.this.getView().findViewById(R.id.graph);
+
+				//List<DataPoint> dataPointsList = new ArrayList<>();
+				//	for (HourDto hour : list) {
+				//		dataPointsList.add(new DataPoint(hour.getHour(), hour.getPower()));
+				//	}
+				//	DataPoint[] dataPoints = new DataPoint[dataPointsList.size()];
+
+//				final LineGraphSeries<DataPoint> line_series =
+//						new LineGraphSeries<DataPoint>(dataPointsList.toArray(dataPoints));
+
+//				final StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(line_graph);
+
+//				line_graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
+//				line_graph.removeAllSeries();
+
+//				line_graph.addSeries(line_series);
 
 			}
 
@@ -185,6 +238,4 @@ public class DataFragment extends Fragment {
 		}
 
 	}
-
-
 }
