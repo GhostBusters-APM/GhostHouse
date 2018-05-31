@@ -15,9 +15,9 @@ public interface DevicePowerDataDao {
     @Query("SELECT * from DevicePowerData")
     List<DevicePowerData> getAll();
 
-    @Query("SELECT DPD.id, DPD.device_id, DPD.date, DPD.value " +
+    @Query("SELECT DPD.devicePowerDataId, DPD.device_id, DPD.date, DPD.value " +
             "FROM DevicePowerData as DPD " +
-            "INNER JOIN Device ON DPD.device_id = Device.id " +
+            "INNER JOIN Device ON DPD.device_id = Device.deviceId " +
             "WHERE Device.userId = :userId")
     List<DevicePowerData> getForUser(String userId);
 
@@ -33,23 +33,23 @@ public interface DevicePowerDataDao {
             "WHERE date <= :date")
     List<DevicePowerData> getBeforeDate(@NonNull Date date);
 
-    @Query("SELECT DPD.id, DPD.device_id, DPD.date, DPD.value " +
+    @Query("SELECT DPD.devicePowerDataId, DPD.device_id, DPD.date, DPD.value " +
             "FROM DevicePowerData as DPD " +
-            "INNER JOIN Device ON DPD.device_id = Device.id " +
+            "INNER JOIN Device ON DPD.device_id = Device.deviceId " +
             "WHERE Device.userId = :userId " +
-            "  AND Device.id = :deviceId")
+            "  AND Device.deviceId = :deviceId")
     List<DevicePowerData> getForUserAndDeviceId(@NonNull String userId, int deviceId);
 
-    @Query("SELECT DPD.id, DPD.device_id, DPD.date, DPD.value " +
+    @Query("SELECT DPD.devicePowerDataId, DPD.device_id, DPD.date, DPD.value " +
             "FROM DevicePowerData as DPD " +
-            "INNER JOIN Device ON DPD.device_id = Device.id " +
+            "INNER JOIN Device ON DPD.device_id = Device.deviceId " +
             "WHERE Device.userId = :userId " +
             "  AND DPD.date >= :date")
     List<DevicePowerData> getForUserAfterDate(@NonNull String userId, @NonNull Date date);
 
-    @Query("SELECT DPD.id, DPD.device_id, DPD.date, DPD.value " +
+    @Query("SELECT DPD.devicePowerDataId, DPD.device_id, DPD.date, DPD.value " +
             "FROM DevicePowerData as DPD " +
-            "INNER JOIN Device ON DPD.device_id = Device.id " +
+            "INNER JOIN Device ON DPD.device_id = Device.deviceId " +
             "WHERE Device.userId = :userId " +
             "  AND DPD.date <= :date")
     List<DevicePowerData> getForUserBeforeDate(@NonNull String userId, @NonNull Date date);
@@ -70,27 +70,27 @@ public interface DevicePowerDataDao {
             "  AND date <= :endDate")
     List<DevicePowerData> getBetweenDates(@NonNull Date startDate, @NonNull Date endDate);
 
-    @Query("SELECT DPD.id, DPD.device_id, DPD.date, DPD.value " +
+    @Query("SELECT DPD.devicePowerDataId, DPD.device_id, DPD.date, DPD.value " +
             "FROM DevicePowerData as DPD " +
-            "INNER JOIN Device ON DPD.device_id = Device.id " +
+            "INNER JOIN Device ON DPD.device_id = Device.deviceId " +
             "WHERE Device.userId = :userId " +
-            "  AND Device.id = :deviceId " +
+            "  AND Device.deviceId = :deviceId " +
             "  AND DPD.date >= :date")
     List<DevicePowerData> getForUserAndDeviceIdAfterDate(@NonNull String userId, int deviceId,
                                                          @NonNull Date date);
 
-    @Query("SELECT DPD.id, DPD.device_id, DPD.date, DPD.value " +
+    @Query("SELECT DPD.devicePowerDataId, DPD.device_id, DPD.date, DPD.value " +
             "FROM DevicePowerData as DPD " +
-            "INNER JOIN Device ON DPD.device_id = Device.id " +
+            "INNER JOIN Device ON DPD.device_id = Device.deviceId " +
             "WHERE Device.userId = :userId " +
-            "  AND Device.id = :deviceId " +
+            "  AND Device.deviceId = :deviceId " +
             "  AND DPD.date <= :date")
     List<DevicePowerData> getForUserAndDeviceIdBeforeDate(@NonNull String userId, int deviceId,
                                                           @NonNull Date date);
 
-    @Query("SELECT DPD.id, DPD.device_id, DPD.date, DPD.value " +
+    @Query("SELECT DPD.devicePowerDataId, DPD.device_id, DPD.date, DPD.value " +
             "FROM DevicePowerData as DPD " +
-            "INNER JOIN Device ON DPD.device_id = Device.id " +
+            "INNER JOIN Device ON DPD.device_id = Device.deviceId " +
             "WHERE Device.userId = :userId " +
             "  AND DPD.date >= :startDate " +
             "  AND DPD.date <= :endDate")
@@ -104,11 +104,11 @@ public interface DevicePowerDataDao {
     List<DevicePowerData> getForDeviceIfBetweenDates(int deviceId, @NonNull Date startDate,
                                                      @NonNull Date endDate);
 
-    @Query("SELECT DPD.id, DPD.device_id, DPD.date, DPD.value " +
+    @Query("SELECT DPD.devicePowerDataId, DPD.device_id, DPD.date, DPD.value " +
             "FROM DevicePowerData as DPD " +
-            "INNER JOIN Device ON DPD.device_id = Device.id " +
+            "INNER JOIN Device ON DPD.device_id = Device.deviceId " +
             "WHERE Device.userId = :userId " +
-            "  AND Device.id = :deviceId " +
+            "  AND Device.deviceId = :deviceId " +
             "  AND DPD.date >= :startDate " +
             "  AND DPD.date <= :endDate")
     List<DevicePowerData> getForUserAndDeviceIdBetweenDates(@NonNull String userId, int deviceId,
