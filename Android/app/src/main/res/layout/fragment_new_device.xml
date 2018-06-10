@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.github.ghostbusters.ghosthouse.newdevice.NewDevice"
-    tools:showIn="@layout/activity_new_device">
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="match_parent"
+                                             app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                                             tools:context="com.github.ghostbusters.ghosthouse.newdevice.NewDevice"
+                                             tools:showIn="@layout/activity_new_device">
 
 
     <TextView
@@ -57,9 +57,36 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
-        android:entries="@array/available_devices_array"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/available_devices_tv"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/device_password_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/device_password_tv_str"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/available_devices_sp"
+        android:visibility="invisible"/>
+
+    <EditText
+        android:id="@+id/device_password_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:hint="@string/device_password_et_hint_str"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/device_password_tv"
         android:visibility="invisible"/>
 
     <Button
@@ -73,7 +100,7 @@
         android:textColor="@color/colorWhite"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -90,7 +117,7 @@
         app:layout_constraintBottom_toBottomOf="@id/guideline"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/loading_devices_tv"
@@ -103,7 +130,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/loading_devices_pb"
-        android:text="@string/loading_devices_tv_str" />
+        android:text="@string/loading_devices_tv_str"/>
 
 
 </android.support.constraint.ConstraintLayout>

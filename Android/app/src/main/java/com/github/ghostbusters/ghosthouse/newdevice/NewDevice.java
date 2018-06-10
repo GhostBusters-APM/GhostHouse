@@ -20,26 +20,27 @@ public class NewDevice
         extends AppCompatActivity
         implements NewDeviceFragment.OnNewDeviceListener {
 
-    public static final String DEVICE_ID_RESULT = "device-id";
+    public static final String DEVICE_WIFI_SSID_RESULT = "device-id";
     public static final String DEVICE_NAME_RESULT = "device-name";
+    public static final String DEVICE_PASSWORD_RESULT = "device-wifi-password";
 
     private static final String TAG = "NewDevice";
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
 
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        boolean isNightMode = settings.getBoolean(KEY_NAME, false);
-        if(isNightMode){
+        final SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        final boolean isNightMode = settings.getBoolean(KEY_NAME, false);
+        if (isNightMode) {
 //            setTheme(R.style.AppDarkTheme);
         }
 
         super.onCreate(savedInstanceState);
-        this.setContentView(R.layout.activity_new_device);
-        final Toolbar toolbar = this.findViewById(R.id.toolbar);
-        this.setSupportActionBar(toolbar);
+        setContentView(R.layout.activity_new_device);
+        final Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        final ActionBar supportActionBar = this.getSupportActionBar();
+        final ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
@@ -48,14 +49,15 @@ public class NewDevice
     }
 
     @Override
-    public void onNewDevice(final int deviceId, final String deviceName) {
+    public void onNewDevice(final String deviceId, final String deviceName, final String password) {
         Log.d(NewDevice.TAG, String.valueOf(deviceId));
         final Intent result = new Intent();
-        result.putExtra(NewDevice.DEVICE_ID_RESULT, deviceId);
+        result.putExtra(NewDevice.DEVICE_WIFI_SSID_RESULT, deviceId);
         result.putExtra(NewDevice.DEVICE_NAME_RESULT, deviceName);
-        this.setResult(Activity.RESULT_OK, result);
+        result.putExtra(NewDevice.DEVICE_PASSWORD_RESULT, password);
+        setResult(Activity.RESULT_OK, result);
 
-        this.finish();
+        finish();
     }
 
     /*
@@ -75,13 +77,13 @@ public class NewDevice
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(final Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
         // Checks the orientation of the screen
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             Log.i(NewDevice.TAG, "Landscape");
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             Log.i(NewDevice.TAG, "Portrait");
         }
     }

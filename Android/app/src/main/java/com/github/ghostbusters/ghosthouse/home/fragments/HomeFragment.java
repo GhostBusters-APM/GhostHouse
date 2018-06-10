@@ -184,7 +184,7 @@ public class HomeFragment extends Fragment {
         return devices;
     }
 
-    private void printDevices(final ArrayList<GhostDevice> list){
+    private void printDevices(final ArrayList<GhostDevice> list) {
 
         for (int i = 0; i < list.size(); i++) {
             Log.d(HomeFragment.TAG, String.format(Locale.ENGLISH, "Device %s with id %d from user %s with loc (latitude: %s , longitude: %s)",
@@ -244,14 +244,14 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        Button addButton = view.findViewById(R.id.add_but);
+        final Button addButton = view.findViewById(R.id.add_but);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                String userId;
+            public void onClick(final View view) {
+                final String userId;
                 if (HomeFragment.this.userId == null) {
                     final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount
-                            (HomeFragment.this.getContext());
+                            (getContext());
                     if (acct != null) {
                         userId = acct.getId();
                     } else {
@@ -265,14 +265,14 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        Button updateButton = view.findViewById(R.id.update_but);
+        final Button updateButton = view.findViewById(R.id.update_but);
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                String userId;
+            public void onClick(final View view) {
+                final String userId;
                 if (HomeFragment.this.userId == null) {
                     final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount
-                            (HomeFragment.this.getContext());
+                            (getContext());
                     if (acct != null) {
                         userId = acct.getId();
                     } else {
@@ -285,14 +285,14 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        Button updatePowerButton = view.findViewById(R.id.update_power_but);
+        final Button updatePowerButton = view.findViewById(R.id.update_power_but);
         updatePowerButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                String userId;
+            public void onClick(final View view) {
+                final String userId;
                 if (HomeFragment.this.userId == null) {
                     final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount
-                            (HomeFragment.this.getContext());
+                            (getContext());
                     if (acct != null) {
                         userId = acct.getId();
                     } else {
@@ -323,7 +323,7 @@ public class HomeFragment extends Fragment {
         final long newRowId = db.insert(DeviceContract.DeviceEntry.TABLE_NAME, null, values);
     }
 
-    private void saveDevice(final String name) {
+    private void saveDevice(final String name, final String wifi, final String password) {
         try {
             mFusedLocationClient.getLastLocation()
                     .addOnCompleteListener(getActivity(), new OnCompleteListener<Location>() {
@@ -357,6 +357,8 @@ public class HomeFragment extends Fragment {
                                 objectNode1.put("userId", userId);
                                 objectNode1.put("latitude", latitutde);
                                 objectNode1.put("longitude", longitude);
+                                objectNode1.put("ssid", wifi);
+                                objectNode1.put("password", password);
                                 String json;
                                 try {
                                     json = mapper.writeValueAsString(objectNode1);
@@ -391,11 +393,10 @@ public class HomeFragment extends Fragment {
             case HomeFragment.ADD_DEVICE_REQUEST_CODE:
                 switch (resultCode) {
                     case RESULT_OK:
-                        final int newDeviceId = resultData.getIntExtra(NewDevice.DEVICE_ID_RESULT, -1);
+                        final String wifi = resultData.getStringExtra(NewDevice.DEVICE_WIFI_SSID_RESULT);
+                        final String password = resultData.getStringExtra(NewDevice.DEVICE_PASSWORD_RESULT);
                         final String newDeviceName = resultData.getStringExtra(NewDevice.DEVICE_NAME_RESULT);
-                        Log.d(HomeFragment.TAG, String.format(Locale.ENGLISH, "new device %s added with id: %d", newDeviceName
-                                , newDeviceId));
-                        saveDevice(newDeviceName);
+                        saveDevice(newDeviceName, wifi, password);
                         break;
                     case RESULT_CANCELED:
                         Log.d(HomeFragment.TAG, "adding new device cancelled of failed");
