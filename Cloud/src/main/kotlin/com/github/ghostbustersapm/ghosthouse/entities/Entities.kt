@@ -20,6 +20,7 @@ abstract class Device {
     open var latitude: String = ""
     open var longitude: String = ""
     open var type: Int = -1
+    open var ip: String = ""
 }
 
 @Entity

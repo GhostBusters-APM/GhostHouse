@@ -24,6 +24,9 @@ public class DeviceDetailsFragment extends Fragment {
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		// retain this fragment
+//		setRetainInstance(true);
+
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			this.setSharedElementEnterTransition(
 					TransitionInflater.

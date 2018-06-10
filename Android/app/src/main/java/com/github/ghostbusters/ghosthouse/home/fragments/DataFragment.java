@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.Gravity;
@@ -53,6 +54,7 @@ import java.util.Properties;
 public class DataFragment extends Fragment {
 
 	SwipeRefreshLayout mSwipeRefreshLayout;
+	HttpRequestTask req;
 
 	public DataFragment() {
 		// Required empty public constructor
@@ -88,7 +90,8 @@ public class DataFragment extends Fragment {
 	}
 
 	private void refresh(){
-		new HttpRequestTask(mSwipeRefreshLayout).execute();
+		Log.d("Funciona","Funciona");
+		req = (HttpRequestTask) new HttpRequestTask(mSwipeRefreshLayout).execute();
 	}
 
 
@@ -96,7 +99,7 @@ public class DataFragment extends Fragment {
 	@Override
 	public void onViewCreated(final View view, @Nullable final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		new HttpRequestTask(null).execute();
+		req = (HttpRequestTask) new HttpRequestTask(null).execute();
 
 	}
 	@Override
@@ -105,6 +108,13 @@ public class DataFragment extends Fragment {
 
 		Log.d(DataFragment.class.getName(), "DATA ATTACHED");
 
+	}
+
+	@Override
+	public void onDetach() {
+		Log.d(DataFragment.class.getName(), "DATA DETACHED");
+		req.cancel(true);
+		super.onDetach();
 	}
 
 

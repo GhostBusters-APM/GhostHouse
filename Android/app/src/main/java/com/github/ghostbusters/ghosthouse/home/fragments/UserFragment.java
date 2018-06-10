@@ -110,6 +110,7 @@ public class UserFragment extends Fragment implements GoogleApiClient.OnConnecti
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        setRetainInstance(true);
         if (this.getArguments() != null) {
             this.mParam1 = this.getArguments().getString(UserFragment.ARG_PARAM1);
             this.mParam2 = this.getArguments().getString(UserFragment.ARG_PARAM2);

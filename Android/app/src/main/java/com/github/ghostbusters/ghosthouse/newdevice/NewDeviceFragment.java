@@ -1,12 +1,11 @@
 package com.github.ghostbusters.ghosthouse.newdevice;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.github.ghostbusters.ghosthouse.R;
+import com.github.ghostbusters.ghosthouse.services.ServiceProvider;
 
 import java.util.Locale;
 
@@ -33,21 +33,20 @@ public class NewDeviceFragment extends Fragment {
 
     private class SearchDevicesTask extends AsyncTask<Void, Integer, Void> {
 
+        private Boolean alive = false;
+
         @Override
         protected Void doInBackground(final Void... voids) {
             Log.d(NewDeviceFragment.TAG, "starting search for devices");
-            try {
-                Thread.sleep(1000);
-            } catch (final InterruptedException e) {
-                Log.d(NewDeviceFragment.TAG, "search thread interrupted");
+            ServiceProvider.getIotClient().checkConnected(getContext(), msg -> alive = true);
+            while (!alive) {
+                try {
+                    Thread.sleep(2000);
+                } catch (final InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-            this.publishProgress(50);
-            try {
-                Thread.sleep(1000);
-            } catch (final InterruptedException e) {
-                Log.d(NewDeviceFragment.TAG, "search thread interrupted");
-            }
-            Log.d(NewDeviceFragment.TAG, "done searching for devices");
+            publishProgress(100);
             return null;
         }
 
@@ -59,7 +58,7 @@ public class NewDeviceFragment extends Fragment {
 
         @Override
         protected void onPostExecute(final Void devices) {
-            NewDeviceFragment.this.devicesDiscovered(devices);
+            devicesDiscovered(devices);
         }
     }
 
@@ -67,18 +66,23 @@ public class NewDeviceFragment extends Fragment {
     public void onAttach(final Context context) {
         super.onAttach(context);
         try {
-            this.listener = (OnNewDeviceListener) context;
+            listener = (OnNewDeviceListener) context;
         } catch (final ClassCastException e) {
             throw new ClassCastException(context.toString() +
                     " must implement OnNewDeviceListener");
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable final Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_new_device, container, false);
-        this.setUpCallbacks(rootView);
+        setUpCallbacks(rootView);
 
         return rootView;
     }
@@ -93,25 +97,6 @@ public class NewDeviceFragment extends Fragment {
     private void setUpCallbacks(final View view) {
 
         final EditText etDeviceName = view.findViewById(R.id.device_name_et);
-        etDeviceName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(final CharSequence charSequence,
-                                          final int i, final int i1, final int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(final CharSequence charSequence,
-                                      final int i, final int i1, final int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(final Editable editable) {
-                Log.d(NewDeviceFragment.TAG, String.format(Locale.ENGLISH,
-                        "device name changed: %s", editable));
-            }
-        });
 
         final Spinner spAvailableDevices =
                 view.findViewById(R.id.available_devices_sp);
@@ -133,14 +118,16 @@ public class NewDeviceFragment extends Fragment {
         });
 
         final Button butAddDevice = view.findViewById(R.id.add_device_but);
+        butAddDevice.setBackgroundColor(Color.BLUE);
+        butAddDevice.setTextColor(Color.WHITE);
         butAddDevice.setOnClickListener(button -> {
             final int selectedDeviceId =
                     spAvailableDevices.getSelectedItemPosition();
 
             Log.d(NewDeviceFragment.TAG, "add clicked");
 
-            if (this.listener != null) {
-                this.listener.onNewDevice(selectedDeviceId, String.valueOf(etDeviceName.getText()));
+            if (listener != null) {
+                listener.onNewDevice(selectedDeviceId, String.valueOf(etDeviceName.getText()));
             }
         });
     }
@@ -152,7 +139,7 @@ public class NewDeviceFragment extends Fragment {
         final int[] viewIdsToHide = new int[]{R.id.loading_devices_pb,
                 R.id.loading_devices_tv};
 
-        final View fragmentRootView = this.getView();
+        final View fragmentRootView = getView();
 
         if (fragmentRootView == null) {
             return;

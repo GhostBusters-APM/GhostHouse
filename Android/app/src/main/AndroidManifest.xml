@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.github.ghostbusters.ghosthouse">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.github.ghostbusters.ghosthouse">
 
     <!-- To access Google+ APIs: -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
 
     <application
@@ -20,42 +22,45 @@
         tools:replace="android:icon,android:theme">
         <activity
             android:name=".home.Home"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_home">
 
         </activity>
         <activity
             android:name=".newdevice.NewDevice"
             android:label="@string/title_activity_new_device"
+            android:configChanges="orientation|screenSize"
             android:parentActivityName=".home.Home"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.github.ghostbusters.ghosthouse.home.Home" />
+                android:value="com.github.ghostbusters.ghosthouse.home.Home"/>
         </activity>
         <activity
             android:name=".loggin.LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         android:label="@string/title_activity_login"
         android:theme="@style/AppTheme" />
-        <activity android:name=".home.ArActivityWrapper" />
+        <activity android:name=".home.ArActivityWrapper"/>
 
         <!-- Declaring broadcast receiver for BOOT_COMPLETED event. -->
         <receiver android:name=".wifiservice.BootCompletedReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-                <action android:name="android.intent.action.REBOOT" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+                <action android:name="android.intent.action.REBOOT"/>
             </intent-filter>
         </receiver>
 
-        <service android:name=".wifiservice.WifiService" />
+        <service android:name=".wifiservice.WifiService"/>
+        <service android:name="org.eclipse.paho.android.service.MqttService"/>
         <service android:name=".syncservice.RemoteSyncService"
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="false"/>

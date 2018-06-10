@@ -9,10 +9,8 @@
         <option value="compile" />
         <option value="fieldCanBeFinal" />
         <option value="localCanBeFinal" />
-        <option value="unqualifiedFieldAccess" />
-        <option value="unqualifiedMethodAccess" />
-        <option value="unqualifiedStaticMemberAccess" />
         <option value="missingOverrideAnnotation" />
+        <option value="unnecessaryThis" />
       </set>
     </option>
     <option name="configurationPath" value="" />
