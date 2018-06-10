@@ -1,8 +1,11 @@
 package com.github.ghostbusters.ghosthouse.syncservice;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.app.JobIntentService;
 import android.util.Log;
@@ -25,7 +28,7 @@ import java.util.List;
 import java.util.Properties;
 
 public class RemoteSyncService extends JobIntentService {
-    private static final String TAG = RemoteSyncService.class.getName();
+    private static final String TAG = RemoteSyncService.class.getSimpleName();
 
     private static final int JOB_ID = 1001;
 
@@ -81,6 +84,31 @@ public class RemoteSyncService extends JobIntentService {
         enqueueWork(context, work);
     }
 
+    private static PendingIntent buildDevicePowerDataUpdatesIntent(Context context,
+                                                                   String userId,
+                                                                   int deviceId) {
+        Intent intent = new Intent(context, UpdateDevicePowerDataReceiver.class);
+        intent.putExtra(UpdateDevicePowerDataReceiver.USER_ID, userId);
+        intent.putExtra(UpdateDevicePowerDataReceiver.DEVICE_ID, deviceId);
+
+        return PendingIntent.getBroadcast(context, deviceId, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    public static void startDevicePowerDataUpdates(Context context, String userId, int deviceId) {
+        updateDevicePowerData(context, userId, deviceId);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
+                SystemClock.elapsedRealtime() + 5 * 1000,
+                5 * 1000,
+                buildDevicePowerDataUpdatesIntent(context, userId, deviceId));
+    }
+
+    public static void stopDevicePowerDataUpdates(Context context, String userId, int deviceId) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(buildDevicePowerDataUpdatesIntent(context, userId, deviceId));
+    }
+
     private static void enqueueWork(Context context, Intent work) {
         enqueueWork(context, RemoteSyncService.class, JOB_ID, work);
     }
@@ -89,12 +117,18 @@ public class RemoteSyncService extends JobIntentService {
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
         final String action = intent.getAction();
-        if (ACTION_ADD_DEVICE.equals(action)) {
-            doAddDevice(intent);
-        } else if (ACTION_UPDATE_DEVICES.equals(action)) {
-            doUpdateDevices(intent);
-        } else if (ACTION_UPDATE_DEVICE_POWER_DATA.equals(action)) {
-            doUpdateDevicePowerData(intent);
+        if (action != null) {
+            switch (action) {
+                case ACTION_ADD_DEVICE:
+                    doAddDevice(intent);
+                    break;
+                case ACTION_UPDATE_DEVICES:
+                    doUpdateDevices(intent);
+                    break;
+                case ACTION_UPDATE_DEVICE_POWER_DATA:
+                    doUpdateDevicePowerData(intent);
+                    break;
+            }
         }
 
     }
@@ -142,6 +176,15 @@ public class RemoteSyncService extends JobIntentService {
 
         DatabaseService dbService = DatabaseServiceImpl.getInstance(getApplicationContext());
         dbService.updateDeviceList(userId, Arrays.asList(devices));
+
+        Intent updateIntent = new Intent(this, UpdateDevicesReceiver.class);
+        updateIntent.putExtra(UpdateDevicesReceiver.USER_ID, userId);
+        PendingIntent pendingIntent = PendingIntent
+                .getBroadcast(this, 0, updateIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME,
+                SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_FIFTEEN_MINUTES,
+                pendingIntent);
     }
 
     private void doUpdateDevicePowerData(@NonNull Intent intent) {
@@ -175,7 +218,7 @@ public class RemoteSyncService extends JobIntentService {
     }
 
     private String getUrl(String endPoint) {
-        Properties properties = new Properties();;
+        Properties properties = new Properties();
         AssetManager assetManager = getApplicationContext().getAssets();
 
         try {

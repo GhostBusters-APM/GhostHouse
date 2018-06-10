@@ -304,6 +304,46 @@ public class HomeFragment extends Fragment {
                 RemoteSyncService.updateDevicePowerData(getContext(), userId, 1);
             }
         });
+
+        final Button startUpdatePowerButton = view.findViewById(R.id.start_update_power_but);
+        startUpdatePowerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final String userId;
+                if (HomeFragment.this.userId == null) {
+                    final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount
+                            (getContext());
+                    if (acct != null) {
+                        userId = acct.getId();
+                    } else {
+                        userId = HomeFragment.LOCAL_TEST_USERID;
+                    }
+                } else {
+                    userId = HomeFragment.this.userId;
+                }
+                RemoteSyncService.startDevicePowerDataUpdates(getContext(), userId, 1);
+            }
+        });
+
+        final Button stopUpdatePowerButton = view.findViewById(R.id.stop_update_power_but);
+        stopUpdatePowerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final String userId;
+                if (HomeFragment.this.userId == null) {
+                    final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount
+                            (getContext());
+                    if (acct != null) {
+                        userId = acct.getId();
+                    } else {
+                        userId = HomeFragment.LOCAL_TEST_USERID;
+                    }
+                } else {
+                    userId = HomeFragment.this.userId;
+                }
+                RemoteSyncService.stopDevicePowerDataUpdates(getContext(), userId, 1);
+            }
+        });
     }
 
     public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {

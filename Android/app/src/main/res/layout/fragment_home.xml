@@ -130,6 +130,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Actualizar power" />
+
+        <Button
+            android:id="@+id/start_update_power_but"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Start Actualizar power" />
+
+        <Button
+            android:id="@+id/stop_update_power_but"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Stop Actualizar power" />
     </LinearLayout>
 
 
