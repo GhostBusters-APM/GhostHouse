@@ -24,6 +24,14 @@ public class HomeDeviceFragment extends Fragment {
 	}
 
 	@Override
+	public void onCreate(final Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		// retain this fragment
+		setRetainInstance(true);
+
+	}
+
+	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
 							 final Bundle savedInstanceState) {
 

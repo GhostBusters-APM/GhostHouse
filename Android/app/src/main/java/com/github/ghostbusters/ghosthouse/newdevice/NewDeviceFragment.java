@@ -1,8 +1,10 @@
 package com.github.ghostbusters.ghosthouse.newdevice;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.ColorRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -133,6 +135,8 @@ public class NewDeviceFragment extends Fragment {
         });
 
         final Button butAddDevice = view.findViewById(R.id.add_device_but);
+        butAddDevice.setBackgroundColor(Color.BLUE);
+        butAddDevice.setTextColor(Color.WHITE);
         butAddDevice.setOnClickListener(button -> {
             final int selectedDeviceId =
                     spAvailableDevices.getSelectedItemPosition();

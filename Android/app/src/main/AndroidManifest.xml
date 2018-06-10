@@ -20,12 +20,14 @@
         tools:replace="android:icon,android:theme">
         <activity
             android:name=".home.Home"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_home">
 
         </activity>
         <activity
             android:name=".newdevice.NewDevice"
             android:label="@string/title_activity_new_device"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:parentActivityName=".home.Home"
             android:theme="@style/AppTheme">
             <meta-data

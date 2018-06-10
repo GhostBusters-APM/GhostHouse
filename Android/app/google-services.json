@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "551936819726-gff6kmh9f4elin9osl6slcj3j4as0ior.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.github.ghostbusters.ghosthouse",
+            "certificate_hash": "b7e1191dcb6e8700f7c90872c4b8c54e42bfdc29"
+          }
+        },
+        {
           "client_id": "551936819726-o8b1fffgb6m5btjoh0cta35kmoasar2k.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -28,6 +36,10 @@
         },
         {
           "client_id": "551936819726-rd00cv0sbvs367hb48d9tvtp83a3147m.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "551936819726-vg9gug5f9el2c0cpcfbbcfbfcjs58gci.apps.googleusercontent.com",
           "client_type": 3
         }
       ],

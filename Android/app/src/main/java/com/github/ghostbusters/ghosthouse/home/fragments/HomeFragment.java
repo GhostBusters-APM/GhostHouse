@@ -76,7 +76,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setRetainInstance(true);
         if (this.getResources().getBoolean(R.bool.has_two_panes)) {
             this.mIsDualPane = true;
         }
@@ -104,8 +104,8 @@ public class HomeFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_home, container, false);
         this.mLatitudeLabel = this.getResources().getString(R.string.latitude_label);
         this.mLongitudeLabel = this.getResources().getString(R.string.longitude_label);
-        this.mLatitudeText = (TextView) view.findViewById((R.id.latitude_text));
-        this.mLongitudeText = (TextView) view.findViewById((R.id.longitude_text));
+//        this.mLatitudeText = (TextView) view.findViewById((R.id.latitude_text));
+//        this.mLongitudeText = (TextView) view.findViewById((R.id.longitude_text));
 
         return view;
     }
@@ -244,12 +244,12 @@ public class HomeFragment extends Fragment {
                             if (task.isSuccessful() && task.getResult() != null) {
                                 final Location mLastLocation = task.getResult();
 
-                                HomeFragment.this.mLatitudeText.setText(String.format(Locale.ENGLISH, "%s: %f",
-                                        HomeFragment.this.mLatitudeLabel,
-                                        mLastLocation.getLatitude()));
-                                HomeFragment.this.mLongitudeText.setText(String.format(Locale.ENGLISH, "%s: %f",
-                                        HomeFragment.this.mLongitudeLabel,
-                                        mLastLocation.getLongitude()));
+//                                HomeFragment.this.mLatitudeText.setText(String.format(Locale.ENGLISH, "%s: %f",
+//                                        HomeFragment.this.mLatitudeLabel,
+//                                        mLastLocation.getLatitude()));
+//                                HomeFragment.this.mLongitudeText.setText(String.format(Locale.ENGLISH, "%s: %f",
+//                                        HomeFragment.this.mLongitudeLabel,
+//                                        mLastLocation.getLongitude()));
                                 Log.d(HomeFragment.TAG, "Localizacion:");
                                 Log.d(HomeFragment.TAG, String.valueOf(mLastLocation.getLatitude()));
                                 Log.d(HomeFragment.TAG, String.valueOf(mLastLocation.getLongitude()));

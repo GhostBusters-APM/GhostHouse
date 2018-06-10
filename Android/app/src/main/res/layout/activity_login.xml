@@ -21,17 +21,6 @@
             android:scaleType="fitStart"
             app:srcCompat="@drawable/iconapp" />
 
-        <Button
-            android:id="@+id/buttonLogIn"
-            android:layout_width="169dp"
-            android:layout_height="37dp"
-            android:layout_gravity="top|bottom|center_vertical|center_horizontal"
-            android:layout_margin="50dp"
-            android:background="@drawable/my_button"
-            android:backgroundTint="@color/colorPrimary"
-            android:text="LoginTest"
-            android:textColor="@color/colorWhite"
-            android:textSize="18dp" />
     </FrameLayout>
 
     <FrameLayout
@@ -47,6 +36,25 @@
 
 
         </com.google.android.gms.common.SignInButton>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/buttonLogIn"
+            android:layout_width="169dp"
+            android:layout_height="37dp"
+            android:layout_gravity="bottom|center_vertical|center_horizontal"
+            android:layout_margin="50dp"
+            android:background="@drawable/my_button"
+            android:backgroundTint="@color/colorPrimary"
+            android:foregroundGravity="top|fill_vertical"
+            android:text="LoginTest"
+            android:textColor="@color/colorWhite"
+            android:textSize="18dp" />
     </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>

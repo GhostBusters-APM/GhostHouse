@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.github.ghostbusters.ghosthouse.R;
 import com.github.ghostbusters.ghosthouse.helper.view.BottomBarHelper;
@@ -212,6 +214,18 @@ public class Home extends AppCompatActivity implements UserFragment.OnFragmentIn
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Log.i(Home.TAG, "Landscape");
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            Log.i(Home.TAG, "Portrait");
+        }
     }
 
     @Override
