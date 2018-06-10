@@ -2,6 +2,7 @@ package com.github.ghostbusters.ghosthouse.syncservice;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.JobIntentService;
 import android.util.Log;
@@ -16,9 +17,12 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 public class RemoteSyncService extends JobIntentService {
     private static final String TAG = RemoteSyncService.class.getName();
@@ -116,7 +120,7 @@ public class RemoteSyncService extends JobIntentService {
         d.setState(state);
         d.setIp(ip);
         HttpEntity<Device> e = new HttpEntity<>(d);
-        Device d2 = t.postForObject("http://10.0.2.2:8080/device", e, Device.class);
+        Device d2 = t.postForObject(getUrl("device"), e, Device.class);
 
         Log.d(TAG, "Device: " + d2);
 
@@ -126,7 +130,7 @@ public class RemoteSyncService extends JobIntentService {
     private void doUpdateDevices(@NonNull Intent intent) {
         Log.d(TAG, "doUpdateDevices");
         String userId = intent.getStringExtra(UPDATE_DEVICES_USERID_PARAM);
-        String url = UriComponentsBuilder.fromHttpUrl("http://10.0.2.2:8080/device")
+        String url = UriComponentsBuilder.fromHttpUrl(getUrl("device"))
                 .queryParam("userId", userId)
                 .toUriString();
         Log.d(TAG, "query url: " + url);
@@ -144,7 +148,7 @@ public class RemoteSyncService extends JobIntentService {
         Log.d(TAG, "doUpdateDevicePowerData");
         String userId = intent.getStringExtra(UPDATE_DEVICE_POWER_DATA_USERID_PARAM);
         int deviceId = intent.getIntExtra(UPDATE_DEVICE_POWER_DATA_DEVICEID_PARAM, -1);
-        String url = UriComponentsBuilder.fromHttpUrl("http://10.0.2.2:8080/devicePower")
+        String url = UriComponentsBuilder.fromHttpUrl(getUrl("/devicePower"))
                 .queryParam("userId", userId)
                 .queryParam("deviceId", deviceId)
                 .toUriString();
@@ -170,4 +174,19 @@ public class RemoteSyncService extends JobIntentService {
         dbService.updateDevicePower(deviceId, devicePowerDataList);
     }
 
+    private String getUrl(String endPoint) {
+        Properties properties = new Properties();;
+        AssetManager assetManager = getApplicationContext().getAssets();
+
+        try {
+            InputStream inputStream = assetManager.open("config.properties");
+            properties.load(inputStream);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return "http://10.0.2.2:8080/" + endPoint;
+        }
+
+        String baseUrl = properties.getProperty("backendBaseUrl");
+        return baseUrl + endPoint;
+    }
 }
