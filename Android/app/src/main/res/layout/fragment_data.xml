@@ -4,33 +4,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:background="#F5F5F6"
     tools:context=".home.fragments.DataFragment">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/activity_main_swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
+
 
         <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_margin="10dp"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:orientation="vertical">
 
-                <com.jjoe64.graphview.GraphView
-                    android:id="@+id/graph"
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/lineChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="278dp"
+                    android:layout_below="@+id/linetext"
+                    android:layout_margin="5dp"
+                    android:title="Graph Title" />
+
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/pieChart"
                     android:layout_width="match_parent"
                     android:layout_height="278dp"
                     android:layout_below="@+id/linetext"
@@ -41,8 +45,8 @@
                     android:id="@+id/editText4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
                     android:contentDescription="2037 kw"
+                    android:layout_marginStart="10dp"
                     android:ems="10"
                     android:inputType="textPersonName"
                     android:text="Six month consumption"
@@ -52,8 +56,8 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="29dp"
-                    android:layout_marginStart="10dp"
                     android:text="2035 kw"
+                    android:layout_marginStart="10dp"
                     android:textColor="@color/text"
                     android:textSize="18sp" />
 
@@ -61,8 +65,8 @@
                     android:id="@+id/editText5"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
                     android:contentDescription="2037 kw"
+                    android:layout_marginStart="10dp"
                     android:ems="10"
                     android:inputType="textPersonName"
                     android:text="Last year mean consumption"
@@ -72,16 +76,14 @@
                 <TextView
                     android:id="@+id/textView2"
                     android:layout_width="match_parent"
-                    android:layout_height="29dp"
                     android:layout_marginStart="10dp"
+                    android:layout_height="29dp"
                     android:text="450 kw"
                     android:textColor="@color/text"
                     android:textSize="18sp" />
 
             </LinearLayout>
-
         </ScrollView>
-
     </android.support.v4.widget.SwipeRefreshLayout>
 
 </android.support.constraint.ConstraintLayout>
