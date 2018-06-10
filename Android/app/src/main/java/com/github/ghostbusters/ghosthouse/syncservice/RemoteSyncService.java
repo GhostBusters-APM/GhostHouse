@@ -38,39 +38,41 @@ public class RemoteSyncService extends JobIntentService {
     private static final String ADD_DEVICE_LON_PARAM = "longitude";
     private static final String ADD_DEVICE_TYPE_PARAM = "type";
     private static final String ADD_DEVICE_STATE_PARAM = "state";
+    private static final String ADD_DEVICE_IP_PARAM = "ip";
 
     private static final String UPDATE_DEVICES_USERID_PARAM = "userId";
 
     private static final String UPDATE_DEVICE_POWER_DATA_USERID_PARAM = "userId";
     private static final String UPDATE_DEVICE_POWER_DATA_DEVICEID_PARAM = "deviceId";
 
-    public static void addDevice(Context context, String userID, String name, double lat,
-                                 double lon, int type, boolean state) {
+    public static void addDevice(Context context, String userId, String name, double lat,
+                                 double lon, int type, boolean state, String ip) {
         Intent work = new Intent(context, RemoteSyncService.class);
         work.setAction(ACTION_ADD_DEVICE);
-        work.putExtra(ADD_DEVICE_USERID_PARAM, userID);
+        work.putExtra(ADD_DEVICE_USERID_PARAM, userId);
         work.putExtra(ADD_DEVICE_NAME_PARAM, name);
         work.putExtra(ADD_DEVICE_LAT_PARAM, lat);
         work.putExtra(ADD_DEVICE_LON_PARAM, lon);
         work.putExtra(ADD_DEVICE_TYPE_PARAM, type);
         work.putExtra(ADD_DEVICE_STATE_PARAM, state);
+        work.putExtra(ADD_DEVICE_IP_PARAM, ip);
 
         enqueueWork(context, work);
     }
 
-    public static void upadteDevices(Context context, String userID) {
+    public static void upadteDevices(Context context, String userId) {
         Intent work = new Intent(context, RemoteSyncService.class);
         work.setAction(ACTION_UPDATE_DEVICES);
-        work.putExtra(UPDATE_DEVICES_USERID_PARAM, userID);
+        work.putExtra(UPDATE_DEVICES_USERID_PARAM, userId);
 
         enqueueWork(context, work);
     }
 
-    public static void updateDevicePowerData(Context context, String userID, int deviceID) {
+    public static void updateDevicePowerData(Context context, String userId, int deviceId) {
         Intent work = new Intent(context, RemoteSyncService.class);
         work.setAction(ACTION_UPDATE_DEVICE_POWER_DATA);
-        work.putExtra(UPDATE_DEVICE_POWER_DATA_USERID_PARAM, userID);
-        work.putExtra(UPDATE_DEVICE_POWER_DATA_DEVICEID_PARAM, deviceID);
+        work.putExtra(UPDATE_DEVICE_POWER_DATA_USERID_PARAM, userId);
+        work.putExtra(UPDATE_DEVICE_POWER_DATA_DEVICEID_PARAM, deviceId);
 
         enqueueWork(context, work);
     }
@@ -101,6 +103,7 @@ public class RemoteSyncService extends JobIntentService {
         double lon = intent.getDoubleExtra(ADD_DEVICE_LON_PARAM, 0);
         int type = intent.getIntExtra(ADD_DEVICE_TYPE_PARAM, 0);
         boolean state = intent.getBooleanExtra(ADD_DEVICE_STATE_PARAM, true);
+        String ip = intent.getStringExtra(ADD_DEVICE_IP_PARAM);
 
         RestTemplate t = new RestTemplate();
         t.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
@@ -111,10 +114,13 @@ public class RemoteSyncService extends JobIntentService {
         d.setLongitude(lon);
         d.setType(type);
         d.setState(state);
+        d.setIp(ip);
         HttpEntity<Device> e = new HttpEntity<>(d);
         Device d2 = t.postForObject("http://10.0.2.2:8080/device", e, Device.class);
 
         Log.d(TAG, "Device: " + d2);
+
+        RemoteSyncService.upadteDevices(getApplicationContext(), userId);
     }
 
     private void doUpdateDevices(@NonNull Intent intent) {

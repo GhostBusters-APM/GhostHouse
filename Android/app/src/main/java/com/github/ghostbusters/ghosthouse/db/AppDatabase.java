@@ -5,7 +5,7 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
-@Database(entities = {Device.class, DevicePowerData.class}, version = 1)
+@Database(entities = {Device.class, DevicePowerData.class}, version = 2)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase INSTANCE;
@@ -25,7 +25,9 @@ public abstract class AppDatabase extends RoomDatabase {
     private static synchronized void buildInstance(Context context) {
         if (INSTANCE == null) {
             INSTANCE = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class,
-                    "Database.db").build();
+                    "Database.db")
+                    .fallbackToDestructiveMigration()
+                    .build();
         }
     }
 }

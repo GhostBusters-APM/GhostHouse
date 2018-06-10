@@ -206,9 +206,9 @@ public class HomeFragment extends Fragment {
         final ArrayList<GhostDevice> devicesList = getDevices();
         printDevices(devicesList);
 
-        final ImageButton imageView = (ImageButton) view.findViewById(R.id.fragment_a_imageButton);
+        final ImageButton imageView = view.findViewById(R.id.fragment_a_imageButton);
 
-        final ImageButton add = (ImageButton) view.findViewById(R.id.addImage);
+        final ImageButton add = view.findViewById(R.id.addImage);
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -233,7 +233,7 @@ public class HomeFragment extends Fragment {
         });
 
 
-        final Switch switchButton = (Switch) view.findViewById(R.id.switch1);
+        final Switch switchButton = view.findViewById(R.id.switch1);
         switchButton.setOnCheckedChangeListener(this::onCheckedChanged);
         add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -260,7 +260,8 @@ public class HomeFragment extends Fragment {
                 } else {
                     userId = HomeFragment.this.userId;
                 }
-                RemoteSyncService.addDevice(getContext(), userId, "lala", 12.5, -3, 1, true);
+                RemoteSyncService.addDevice(getContext(), userId, "lala", 12.5, -3, 1,
+                        true, "10.10.10.10");
             }
         });
 
