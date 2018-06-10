@@ -19,6 +19,7 @@ abstract class Device {
     open var name: String = ""
     open var latitude: String = ""
     open var longitude: String = ""
+    open var ip: String = ""
 
 }
 

@@ -5,11 +5,9 @@ import com.github.ghostbustersapm.ghosthouse.entities.DevicePowerData
 import com.github.ghostbustersapm.ghosthouse.services.DeviceService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
+import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalTime
-import java.util.Locale
-import java.text.SimpleDateFormat
-
 
 
 @RestController
@@ -38,22 +36,22 @@ class GetController {
     }
 
 
-    data class DeviceDto(val userId: String, val name: String, val latitude: String, val longitude: String, val type: Int, val state: Boolean)
+    data class DeviceDto(val userId: String, val name: String, val latitude: String, val longitude: String, val type: Int, val state: Boolean, val ip: String)
 
 
     @PostMapping("device")
     fun createDevice(@RequestBody data: DeviceDto): Device {
-        return deviceService.createDevice(data.userId, data.name, data.latitude, data.longitude, data.type, data.state);
+        return deviceService.createDevice(data.userId, data.name, data.latitude, data.longitude, data.type, data.state, data.ip);
     }
 
-    data class DevicePowerDto(val deviceID: Long, val value: Double, val from:String, val to:String)
+    data class DevicePowerDto(val deviceID: Long, val value: Double, val from: String, val to: String)
 
     @PostMapping("devicePower")
     fun createDevicePower(@RequestBody data: DevicePowerDto): DevicePowerData {
         val sdf = SimpleDateFormat("yyyyMMddHHmmss")
-        val from =sdf.parse(data.from).toInstant()// all done
+        val from = sdf.parse(data.from).toInstant()// all done
         val to = sdf.parse(data.to).toInstant()
-        return deviceService.registerPower(data.deviceID, data.value,from,to);
+        return deviceService.registerPower(data.deviceID, data.value, from, to);
     }
 
     data class DevicePowerDtoResponse(val id: Long, val value: Double, val from: Instant)

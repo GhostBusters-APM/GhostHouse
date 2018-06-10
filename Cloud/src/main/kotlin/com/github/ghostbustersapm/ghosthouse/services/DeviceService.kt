@@ -22,7 +22,7 @@ class DeviceService {
     lateinit var entityManager: EntityManager
 
 
-    fun createDevice(userId: String, name: String, latitude: String, longitude: String, type: Int, state: Boolean): Device {
+    fun createDevice(userId: String, name: String, latitude: String, longitude: String, type: Int, state: Boolean, ip: String): Device {
 
         var device = DeviceSwitch()
         device.userId = userId
@@ -30,6 +30,7 @@ class DeviceService {
         device.longitude = longitude
         device.name = name
         device.state = state
+        device.ip = ip
         return deviceRepository.save(device)
     }
 
@@ -39,7 +40,7 @@ class DeviceService {
     }
 
 
-    fun registerPower(deviceId: Long, value: Double,from: Instant,to:Instant): DevicePowerData {
+    fun registerPower(deviceId: Long, value: Double, from: Instant, to: Instant): DevicePowerData {
         var powerData = DevicePowerData()
         powerData.device = deviceRepository.findById(deviceId).get()
         powerData.value = value

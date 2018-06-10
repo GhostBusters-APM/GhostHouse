@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Bundle;
@@ -17,13 +16,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.github.ghostbusters.ghosthouse.R;
 import com.github.ghostbusters.ghosthouse.home.DeviceContract;
 import com.github.ghostbusters.ghosthouse.home.DevicesDbHelper;
 import com.github.ghostbusters.ghosthouse.newdevice.NewDevice;
+import com.github.ghostbusters.ghosthouse.services.ServiceProvider;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -33,8 +35,9 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import org.eclipse.paho.android.service.MqttAndroidClient;
+
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -61,6 +64,7 @@ public class HomeFragment extends Fragment {
     private String userId = null;
 
     boolean mIsDualPane = false;
+    private MqttAndroidClient service;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -72,27 +76,36 @@ public class HomeFragment extends Fragment {
 
     }
 
+    @Override
+    public void onPause() {
+        try {
+            service.disconnect();
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+        super.onPause();
+    }
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        if (this.getResources().getBoolean(R.bool.has_two_panes)) {
-            this.mIsDualPane = true;
+        if (getResources().getBoolean(R.bool.has_two_panes)) {
+            mIsDualPane = true;
         }
 
         final GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
-        this.mGoogleSignInClient = GoogleSignIn.getClient(this.getActivity(), gso);
-        this.mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
-        this.context = this.getActivity();
-        this.mDbHelper = new DevicesDbHelper(context);
+        mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        context = getActivity();
+        mDbHelper = new DevicesDbHelper(context);
     }
 
     @Override
     public void onDestroy() {
-        this.mDbHelper.close();
+        mDbHelper.close();
         super.onDestroy();
     }
 
@@ -102,8 +115,8 @@ public class HomeFragment extends Fragment {
                              final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_home, container, false);
-        this.mLatitudeLabel = this.getResources().getString(R.string.latitude_label);
-        this.mLongitudeLabel = this.getResources().getString(R.string.longitude_label);
+        mLatitudeLabel = getResources().getString(R.string.latitude_label);
+        mLongitudeLabel = getResources().getString(R.string.longitude_label);
 //        this.mLatitudeText = (TextView) view.findViewById((R.id.latitude_text));
 //        this.mLongitudeText = (TextView) view.findViewById((R.id.longitude_text));
 
@@ -111,11 +124,11 @@ public class HomeFragment extends Fragment {
     }
 
 
-    private ArrayList<GhostDevice> getDevices(){
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+    private ArrayList<GhostDevice> getDevices() {
+        final SQLiteDatabase db = mDbHelper.getReadableDatabase();
         // Define a projection that specifies which columns from the database
         // you will actually use after this query.
-        String[] projection = {
+        final String[] projection = {
                 BaseColumns._ID,
                 DeviceContract.DeviceEntry.COLUMN_NAME_USERID,
                 DeviceContract.DeviceEntry.COLUMN_NAME_DEVICE,
@@ -125,14 +138,14 @@ public class HomeFragment extends Fragment {
         };
 
 // Filter results WHERE "title" = 'My Title'
-        String selection = DeviceContract.DeviceEntry.COLUMN_NAME_USERID + " = ?";
-        String[] selectionArgs = { "My Title" };
+        final String selection = DeviceContract.DeviceEntry.COLUMN_NAME_USERID + " = ?";
+        final String[] selectionArgs = {"My Title"};
 
 // How you want the results sorted in the resulting Cursor
-        String sortOrder =
+        final String sortOrder =
                 DeviceContract.DeviceEntry.COLUMN_NAME_USERID + " DESC";
 
-        Cursor cursor = db.query(
+        final Cursor cursor = db.query(
                 DeviceContract.DeviceEntry.TABLE_NAME,   // The table to query
                 projection,             // The array of columns to return (pass null to get all)
                 null,              // The columns for the WHERE clause
@@ -141,15 +154,15 @@ public class HomeFragment extends Fragment {
                 null,                   // don't filter by row groups
                 sortOrder               // The sort order
         );
-        ArrayList<GhostDevice> devices = new ArrayList<GhostDevice>();
-        while(cursor.moveToNext()) {
-            GhostDevice gd = new GhostDevice();
-            long itemId = cursor.getLong(
+        final ArrayList<GhostDevice> devices = new ArrayList<GhostDevice>();
+        while (cursor.moveToNext()) {
+            final GhostDevice gd = new GhostDevice();
+            final long itemId = cursor.getLong(
                     cursor.getColumnIndexOrThrow(DeviceContract.DeviceEntry._ID));
-            String name = cursor.getString(cursor.getColumnIndexOrThrow(DeviceContract.DeviceEntry.COLUMN_NAME_DEVICE));
-            String userid = cursor.getString(cursor.getColumnIndexOrThrow(DeviceContract.DeviceEntry.COLUMN_NAME_USERID));
-            String lt = cursor.getString(cursor.getColumnIndexOrThrow(DeviceContract.DeviceEntry.COLUMN_NAME_LATITUDE));
-            String lg = cursor.getString(cursor.getColumnIndexOrThrow(DeviceContract.DeviceEntry.COLUMN_NAME_LONGITUDE));
+            final String name = cursor.getString(cursor.getColumnIndexOrThrow(DeviceContract.DeviceEntry.COLUMN_NAME_DEVICE));
+            final String userid = cursor.getString(cursor.getColumnIndexOrThrow(DeviceContract.DeviceEntry.COLUMN_NAME_USERID));
+            final String lt = cursor.getString(cursor.getColumnIndexOrThrow(DeviceContract.DeviceEntry.COLUMN_NAME_LATITUDE));
+            final String lg = cursor.getString(cursor.getColumnIndexOrThrow(DeviceContract.DeviceEntry.COLUMN_NAME_LONGITUDE));
             gd.setId(itemId);
             gd.setName(name);
             gd.setUserId(userid);
@@ -161,8 +174,11 @@ public class HomeFragment extends Fragment {
 
 
         return devices;
-    };
-    private void printDevices(final ArrayList<GhostDevice> list){
+    }
+
+    ;
+
+    private void printDevices(final ArrayList<GhostDevice> list) {
 
         for (int i = 0; i < list.size(); i++) {
             Log.d(HomeFragment.TAG, String.format(Locale.ENGLISH, "Device %s with id %d from user %s with loc (latitude: %s , longitude: %s)",
@@ -171,10 +187,10 @@ public class HomeFragment extends Fragment {
                     list.get(i).getUserId(),
                     list.get(i).getLatitude(),
                     list.get(i).getLongitude()
-                   ));
+            ));
         }
         // print the number of contacts
-        Log.d(TAG,String.format("Number of ghost devices: %d", list.size()));
+        Log.d(TAG, String.format("Number of ghost devices: %d", list.size()));
     }
 
     @Override
@@ -185,21 +201,22 @@ public class HomeFragment extends Fragment {
         printDevices(devicesList);
 
         final ImageButton imageView = (ImageButton) view.findViewById(R.id.fragment_a_imageButton);
+
         final ImageButton add = (ImageButton) view.findViewById(R.id.addImage);
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 final DeviceDetailsFragment simpleFragmentB = new DeviceDetailsFragment();
-                if (!HomeFragment.this.mIsDualPane) {
-                    HomeFragment.this.getActivity().getSupportFragmentManager()
+                if (!mIsDualPane) {
+                    getActivity().getSupportFragmentManager()
                             .beginTransaction()
                             .addSharedElement(imageView, ViewCompat.getTransitionName(imageView))
                             .addToBackStack(HomeFragment.TAG)
                             .replace(R.id.home_base_frame, simpleFragmentB)
                             .commit();
                 } else {
-                    HomeFragment.this.getActivity().getSupportFragmentManager()
+                    getActivity().getSupportFragmentManager()
                             .beginTransaction()
                             .addSharedElement(imageView, ViewCompat.getTransitionName(imageView))
                             .addToBackStack(HomeFragment.TAG)
@@ -209,21 +226,28 @@ public class HomeFragment extends Fragment {
             }
         });
 
+
+        final Switch switchButton = (Switch) view.findViewById(R.id.switch1);
+        switchButton.setOnCheckedChangeListener(this::onCheckedChanged);
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 Log.d(HomeFragment.TAG, "Add new device");
-                final Intent intent = new Intent(HomeFragment.this.getActivity(), NewDevice.class);
-                HomeFragment.this.startActivityForResult(intent, HomeFragment.ADD_DEVICE_REQUEST_CODE);
+                final Intent intent = new Intent(getActivity(), NewDevice.class);
+                startActivityForResult(intent, HomeFragment.ADD_DEVICE_REQUEST_CODE);
             }
         });
 
 
     }
 
+    public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
+        service = ServiceProvider.getIotClient().switchOn(getContext(), "tcp://10.0.2.2:1883", null);
+    }
+
     private void saveInBD(final String name, final String id, final String lg, final String lt) {
         // Gets the data repository in write mode
-        final SQLiteDatabase db = this.mDbHelper.getWritableDatabase();
+        final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         // Create a new map of values, where column names are the keys
         final ContentValues values = new ContentValues();
         values.put(DeviceContract.DeviceEntry.COLUMN_NAME_USERID, id);
@@ -236,8 +260,8 @@ public class HomeFragment extends Fragment {
 
     private void saveDevice(final String name) {
         try {
-            this.mFusedLocationClient.getLastLocation()
-                    .addOnCompleteListener(this.getActivity(), new OnCompleteListener<Location>() {
+            mFusedLocationClient.getLastLocation()
+                    .addOnCompleteListener(getActivity(), new OnCompleteListener<Location>() {
                         @Override
                         public void onComplete(@NonNull final Task<Location> task) {
                             // ...
@@ -254,12 +278,12 @@ public class HomeFragment extends Fragment {
                                 Log.d(HomeFragment.TAG, String.valueOf(mLastLocation.getLatitude()));
                                 Log.d(HomeFragment.TAG, String.valueOf(mLastLocation.getLongitude()));
                                 //obtengo el userID
-                                final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(HomeFragment.this.getContext());
+                                final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getContext());
                                 if (acct != null) {
-                                    HomeFragment.this.userId = acct.getId();
+                                    userId = acct.getId();
                                 }
                                 //guardo en la BD de SQLite
-                                HomeFragment.this.saveInBD(name, HomeFragment.this.userId, String.valueOf(mLastLocation.getLongitude()), String.valueOf(mLastLocation.getLatitude()));
+                                saveInBD(name, userId, String.valueOf(mLastLocation.getLongitude()), String.valueOf(mLastLocation.getLatitude()));
                             } else {
                                 Log.w(HomeFragment.TAG, "getLastLocation:exception", task.getException());
 
@@ -285,7 +309,7 @@ public class HomeFragment extends Fragment {
                         final String newDeviceName = resultData.getStringExtra(NewDevice.DEVICE_NAME_RESULT);
                         Log.d(HomeFragment.TAG, String.format(Locale.ENGLISH, "new device %s added with id: %d", newDeviceName
                                 , newDeviceId));
-                        this.saveDevice(newDeviceName);
+                        saveDevice(newDeviceName);
                         break;
                     case RESULT_CANCELED:
                         Log.d(HomeFragment.TAG, "adding new device cancelled of failed");

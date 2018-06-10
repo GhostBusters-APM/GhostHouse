@@ -25,5 +25,6 @@ public class Device {
     private int type;
 
     private DeviceState state;
+    private String ip;
 
 }
