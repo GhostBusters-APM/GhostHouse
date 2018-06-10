@@ -1,6 +1,7 @@
 package com.github.ghostbusters.ghosthouse.db;
 
 import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
@@ -184,4 +185,10 @@ public interface DevicePowerDataDao {
             }
         }
     }
+
+    @Query("DELETE FROM DevicePowerData WHERE device_id = :deviceId")
+    void deleteAll(int deviceId);
+
+    @Insert
+    void insertAll(DevicePowerData... devicePowerData);
 }

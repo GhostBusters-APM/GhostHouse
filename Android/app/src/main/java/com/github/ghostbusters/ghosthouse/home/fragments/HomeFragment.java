@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Bundle;
@@ -17,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -24,6 +24,7 @@ import com.github.ghostbusters.ghosthouse.R;
 import com.github.ghostbusters.ghosthouse.home.DeviceContract;
 import com.github.ghostbusters.ghosthouse.home.DevicesDbHelper;
 import com.github.ghostbusters.ghosthouse.newdevice.NewDevice;
+import com.github.ghostbusters.ghosthouse.syncservice.RemoteSyncService;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -34,7 +35,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -46,6 +46,8 @@ import static android.app.Activity.RESULT_OK;
  */
 public class HomeFragment extends Fragment {
     public static final String TAG = HomeFragment.class.getSimpleName();
+
+    private static final String LOCAL_TEST_USERID = "local-user";
 
     private static final int ADD_DEVICE_REQUEST_CODE = 1;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -104,8 +106,8 @@ public class HomeFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_home, container, false);
         this.mLatitudeLabel = this.getResources().getString(R.string.latitude_label);
         this.mLongitudeLabel = this.getResources().getString(R.string.longitude_label);
-        this.mLatitudeText = (TextView) view.findViewById((R.id.latitude_text));
-        this.mLongitudeText = (TextView) view.findViewById((R.id.longitude_text));
+        this.mLatitudeText = view.findViewById((R.id.latitude_text));
+        this.mLongitudeText = view.findViewById((R.id.longitude_text));
 
         return view;
     }
@@ -161,7 +163,8 @@ public class HomeFragment extends Fragment {
 
 
         return devices;
-    };
+    }
+
     private void printDevices(final ArrayList<GhostDevice> list){
 
         for (int i = 0; i < list.size(); i++) {
@@ -184,8 +187,8 @@ public class HomeFragment extends Fragment {
         final ArrayList<GhostDevice> devicesList = getDevices();
         printDevices(devicesList);
 
-        final ImageButton imageView = (ImageButton) view.findViewById(R.id.fragment_a_imageButton);
-        final ImageButton add = (ImageButton) view.findViewById(R.id.addImage);
+        final ImageButton imageView = view.findViewById(R.id.fragment_a_imageButton);
+        final ImageButton add = view.findViewById(R.id.addImage);
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -218,7 +221,65 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        Button addButton = view.findViewById(R.id.add_but);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String userId;
+                if (HomeFragment.this.userId == null) {
+                    final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount
+                            (HomeFragment.this.getContext());
+                    if (acct != null) {
+                        userId = acct.getId();
+                    } else {
+                        userId = HomeFragment.LOCAL_TEST_USERID;
+                    }
+                } else {
+                    userId = HomeFragment.this.userId;
+                }
+                RemoteSyncService.addDevice(getContext(), userId, "lala", 12.5, -3, 1, true);
+            }
+        });
 
+        Button updateButton = view.findViewById(R.id.update_but);
+        updateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String userId;
+                if (HomeFragment.this.userId == null) {
+                    final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount
+                            (HomeFragment.this.getContext());
+                    if (acct != null) {
+                        userId = acct.getId();
+                    } else {
+                        userId = HomeFragment.LOCAL_TEST_USERID;
+                    }
+                } else {
+                    userId = HomeFragment.this.userId;
+                }
+                RemoteSyncService.upadteDevices(getContext(), userId);
+            }
+        });
+
+        Button updatePowerButton = view.findViewById(R.id.update_power_but);
+        updatePowerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String userId;
+                if (HomeFragment.this.userId == null) {
+                    final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount
+                            (HomeFragment.this.getContext());
+                    if (acct != null) {
+                        userId = acct.getId();
+                    } else {
+                        userId = HomeFragment.LOCAL_TEST_USERID;
+                    }
+                } else {
+                    userId = HomeFragment.this.userId;
+                }
+                RemoteSyncService.updateDevicePowerData(getContext(), userId, 1);
+            }
+        });
     }
 
     private void saveInBD(final String name, final String id, final String lg, final String lt) {

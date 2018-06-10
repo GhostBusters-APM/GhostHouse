@@ -10,7 +10,7 @@ enum class Type { SWITCH }
 @Entity
 @Table(name = "device")
 @Inheritance
-@DiscriminatorColumn(name = "TYPE")
+@DiscriminatorColumn(name = "DEVICE_TYPE")
 abstract class Device {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,7 +19,7 @@ abstract class Device {
     open var name: String = ""
     open var latitude: String = ""
     open var longitude: String = ""
-
+    open var type: Int = -1
 }
 
 @Entity

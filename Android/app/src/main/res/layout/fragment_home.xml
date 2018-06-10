@@ -50,7 +50,7 @@
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <FrameLayout
                 android:id="@+id/frameLayout2"
@@ -132,6 +132,26 @@
             </FrameLayout>
 
         </TableRow>
+
+
+        <Button
+            android:id="@+id/add_but"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Añadir" />
+
+        <Button
+            android:id="@+id/update_but"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Actualizar" />
+
+        <Button
+            android:id="@+id/update_power_but"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Actualizar power" />
     </LinearLayout>
+
 
 </RelativeLayout>

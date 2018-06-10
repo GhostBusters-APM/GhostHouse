@@ -29,6 +29,7 @@ class DeviceService {
         device.latitude = latitude
         device.longitude = longitude
         device.name = name
+        device.type = type
         device.state = state
         return deviceRepository.save(device)
     }
