@@ -5,12 +5,16 @@ import android.util.Log;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class MqttClient implements IotClient {
 
     public static final String ALIVE = "ALIVE";
+    public static final String ALIVE_ACK = "ALIVE/ACK";
     public static final String SWITCH = "SWITCH";
     public static final String REGISTER = "REGISTER";
     //private static final String DEFAULT_IP = "192.168.0.1";
@@ -26,7 +30,7 @@ public class MqttClient implements IotClient {
                 @Override
                 public void onSuccess(final IMqttToken asyncActionToken) {
                     try {
-                        MqttHelper.publishMessage(mqttAndroidClient, "msg", 1, SWITCH);
+                        MqttHelper.publishMessage(mqttAndroidClient, "msg", 1, SWITCH, null);
                     } catch (final Exception e) {
                         Log.w(SWITCH, e);
                     } finally {
@@ -62,86 +66,113 @@ public class MqttClient implements IotClient {
 
     @Override
     public MqttAndroidClient checkConnected(final Context context, final IotResponse response) {
-        //sendWaitResponse(context, DEFAULT_IP, response, ALIVE, ALIVE, "alive");
+        final MqttAndroidClient mqttAndroidClient = new MqttAndroidClient(context, DEFAULT_IP, "ANDROID");
         try {
-            final MqttAndroidClient client = MqttHelper.getMqttClient(context, DEFAULT_IP, "Android", null);
-            //MqttHelper.publishMessage(client, "msg", 1, ALIVE);
-            if (!client.isConnected()) {
-                client.connect();
-            }
-            MqttHelper.subscribe(client, ALIVE, 1, new IMqttActionListener() {
+            mqttAndroidClient.connect(MqttHelper.getMqttConnectionOption(), new IMqttActionListener() {
                 @Override
-                public void onSuccess(final IMqttToken iMqttToken) {
+                public void onSuccess(final IMqttToken asyncActionToken) {
                     try {
-                        if (response != null) {
-                            response.response(new String(iMqttToken.getResponse().getPayload()));
-                        }
+                        mqttAndroidClient.setCallback(new MqttCallback() {
+                            @Override
+                            public void connectionLost(final Throwable cause) {
+                            }
+
+                            @Override
+                            public void messageArrived(final String topic, final MqttMessage message) throws Exception {
+                                if (topic.equals(ALIVE_ACK)) {
+                                    response.response(new String(message.getPayload()));
+                                }
+                            }
+
+                            @Override
+                            public void deliveryComplete(final IMqttDeliveryToken token) {
+                            }
+                        });
+                        MqttHelper.publishMessage(mqttAndroidClient, "msg", 1, ALIVE, null);
+                        MqttHelper.subscribe(mqttAndroidClient, ALIVE_ACK, 1);
                     } catch (final Exception e) {
-                        try {
-                            client.disconnect();
-                        } catch (final MqttException e1) {
-                            e1.printStackTrace();
-                        }
-                        e.printStackTrace();
+                        Log.w(SWITCH, e);
                     }
                 }
 
                 @Override
-                public void onFailure(final IMqttToken iMqttToken, final Throwable throwable) {
-                    if (response != null) {
-                        response.response(null);
+                public void onFailure(final IMqttToken asyncActionToken, final Throwable exception) {
+                    try {
+                        Log.w(SWITCH, exception);
+                        mqttAndroidClient.disconnect();
+                    } catch (final Exception e1) {
+                        Log.w(SWITCH, e1);
                     }
                 }
             });
-            return client;
-        } catch (final Exception e) {
+        } catch (final MqttException e) {
             e.printStackTrace();
-            return null;
+            try {
+                mqttAndroidClient.disconnect();
+            } catch (final Exception e1) {
+                Log.w(SWITCH, e1);
+            }
         }
+        return mqttAndroidClient;
 
     }
 
     @Override
-    public MqttAndroidClient register(final Context context, final IotResponse response) {
-        return sendWaitResponse(context, DEFAULT_IP, response, REGISTER, REGISTER, "alive");
-    }
-
-    private MqttAndroidClient sendWaitResponse(final Context context, final String ip, final IotResponse response, final String tag1, final String tag2, final String message) {
-        final MqttAndroidClient client = MqttHelper.getMqttClient(context, ip, "Android", null);
-
+    public MqttAndroidClient register(final Context context, final IotResponse response, final String msg) {
+        final MqttAndroidClient mqttAndroidClient = new MqttAndroidClient(context, DEFAULT_IP, "ANDROID");
         try {
-            MqttHelper.subscribe(client, tag2, 1, new IMqttActionListener() {
+            mqttAndroidClient.connect(MqttHelper.getMqttConnectionOption(), new IMqttActionListener() {
                 @Override
-                public void onSuccess(final IMqttToken iMqttToken) {
+                public void onSuccess(final IMqttToken asyncActionToken) {
                     try {
-                        MqttHelper.disconnect(client);
-                        response.response(new String(iMqttToken.getResponse().getPayload(), "UTF-8"));
+                        MqttHelper.publishMessage(mqttAndroidClient, msg, 1, REGISTER, new IMqttActionListener() {
+                            @Override
+                            public void onSuccess(final IMqttToken asyncActionToken) {
+                                try {
+                                    mqttAndroidClient.disconnect();
+                                } catch (final Exception e1) {
+                                    Log.w(SWITCH, e1);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(final IMqttToken asyncActionToken, final Throwable exception) {
+                                try {
+                                    mqttAndroidClient.disconnect();
+                                } catch (final Exception e1) {
+                                    Log.w(SWITCH, e1);
+                                }
+                            }
+                        });
                     } catch (final Exception e) {
-                        e.printStackTrace();
+                        Log.w(SWITCH, e);
+                        try {
+                            mqttAndroidClient.disconnect();
+                        } catch (final Exception e1) {
+                            Log.w(SWITCH, e1);
+                        }
                     }
                 }
 
                 @Override
-                public void onFailure(final IMqttToken iMqttToken, final Throwable throwable) {
+                public void onFailure(final IMqttToken asyncActionToken, final Throwable exception) {
                     try {
-                        MqttHelper.disconnect(client);
-                    } catch (final MqttException e) {
-                        e.printStackTrace();
+                        Log.w(SWITCH, exception);
+                        mqttAndroidClient.disconnect();
+                    } catch (final Exception e1) {
+                        Log.w(SWITCH, e1);
                     }
-                    response.response(null);
                 }
             });
-            MqttHelper.publishMessage(client, message, 1, tag1);
-        } catch (final Exception e) {
-            try {
-                MqttHelper.disconnect(client);
-            } catch (final MqttException e1) {
-                e1.printStackTrace();
-            }
-            response.response(null);
+        } catch (final MqttException e) {
             e.printStackTrace();
+            try {
+                mqttAndroidClient.disconnect();
+            } catch (final Exception e1) {
+                Log.w(SWITCH, e1);
+            }
         }
-        return client;
+        return mqttAndroidClient;
     }
 
 

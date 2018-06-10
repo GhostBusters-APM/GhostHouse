@@ -10,7 +10,7 @@ public interface IotClient {
 
     MqttAndroidClient checkConnected(final Context context, final IotResponse response);
 
-    MqttAndroidClient register(final Context context, final IotResponse response);
+    MqttAndroidClient register(Context context, final IotResponse response, String message);
 
     interface IotResponse {
         void response(String msg);

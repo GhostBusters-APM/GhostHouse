@@ -2,7 +2,6 @@ package com.github.ghostbusters.ghosthouse.services.iotClient;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
@@ -19,7 +18,7 @@ public class MqttHelper {
     private static final String TAG = MqttHelper.class.getName();
 
     public static void publishMessage(@NonNull final MqttAndroidClient client,
-                                      @NonNull final String msg, final int qos, @NonNull final String topic)
+                                      @NonNull final String msg, final int qos, @NonNull final String topic, final IMqttActionListener callback)
             throws MqttException, UnsupportedEncodingException {
         byte[] encodedPayload = new byte[0];
         encodedPayload = msg.getBytes("UTF-8");
@@ -27,7 +26,7 @@ public class MqttHelper {
         message.setId(5866);
         message.setRetained(true);
         message.setQos(qos);
-        client.publish(topic, message);
+        client.publish(topic, message, null, callback);
     }
 
     public static MqttAndroidClient getMqttClient(final Context context, final String brokerUrl, final String clientId, final IMqttActionListener listener) {
@@ -62,42 +61,8 @@ public class MqttHelper {
 
 
     public static void subscribe(@NonNull final MqttAndroidClient client,
-                                 @NonNull final String topic, final int qos, final IMqttActionListener listener) throws MqttException {
-        final IMqttToken token = client.subscribe(topic, qos);
-        token.setActionCallback(listener);
+                                 @NonNull final String topic, final int qos) throws MqttException {
+        client.subscribe(topic, qos);
     }
 
-
-    public static void unSubscribe(@NonNull final MqttAndroidClient client,
-                                   @NonNull final String topic) throws MqttException {
-
-        final IMqttToken token = client.unsubscribe(topic);
-        token.setActionCallback(new IMqttActionListener() {
-            @Override
-            public void onSuccess(final IMqttToken iMqttToken) {
-                Log.d(MqttHelper.TAG, "UnSubscribe Successfully " + topic);
-            }
-
-            @Override
-            public void onFailure(final IMqttToken iMqttToken, final Throwable throwable) {
-                Log.e(MqttHelper.TAG, "UnSubscribe Failed " + topic);
-            }
-        });
-    }
-
-    public static void disconnect(@NonNull final MqttAndroidClient client)
-            throws MqttException {
-        final IMqttToken mqttToken = client.disconnect();
-        mqttToken.setActionCallback(new IMqttActionListener() {
-            @Override
-            public void onSuccess(final IMqttToken iMqttToken) {
-                Log.d(MqttHelper.TAG, "Successfully disconnected");
-            }
-
-            @Override
-            public void onFailure(final IMqttToken iMqttToken, final Throwable throwable) {
-                Log.d(MqttHelper.TAG, "Failed to disconnected " + throwable.toString());
-            }
-        });
-    }
 }

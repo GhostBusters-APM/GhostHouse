@@ -21,6 +21,9 @@ import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.ghostbusters.ghosthouse.R;
 import com.github.ghostbusters.ghosthouse.home.DeviceContract;
 import com.github.ghostbusters.ghosthouse.home.DevicesDbHelper;
@@ -36,6 +39,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -275,15 +279,36 @@ public class HomeFragment extends Fragment {
 //                                        HomeFragment.this.mLongitudeLabel,
 //                                        mLastLocation.getLongitude()));
                                 Log.d(HomeFragment.TAG, "Localizacion:");
-                                Log.d(HomeFragment.TAG, String.valueOf(mLastLocation.getLatitude()));
-                                Log.d(HomeFragment.TAG, String.valueOf(mLastLocation.getLongitude()));
+                                final String latitutde = String.valueOf(mLastLocation.getLatitude());
+                                Log.d(HomeFragment.TAG, latitutde);
+                                final String longitude = String.valueOf(mLastLocation.getLongitude());
+                                Log.d(HomeFragment.TAG, longitude);
                                 //obtengo el userID
                                 final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getContext());
                                 if (acct != null) {
                                     userId = acct.getId();
                                 }
                                 //guardo en la BD de SQLite
-                                saveInBD(name, userId, String.valueOf(mLastLocation.getLongitude()), String.valueOf(mLastLocation.getLatitude()));
+                                saveInBD(name, userId, longitude, latitutde);
+                                final ObjectMapper mapper = new ObjectMapper();
+                                final ObjectNode objectNode1 = mapper.createObjectNode();
+                                objectNode1.put("name", name);
+                                objectNode1.put("userId", userId);
+                                objectNode1.put("latitude", latitutde);
+                                objectNode1.put("longitude", longitude);
+                                String json;
+                                try {
+                                    json = mapper.writeValueAsString(objectNode1);
+                                } catch (final JsonProcessingException e) {
+                                    json = "";
+                                }
+                                service = ServiceProvider.getIotClient().register(getContext(), msg -> {
+                                    try {
+                                        service.disconnect();
+                                    } catch (final MqttException e) {
+                                        e.printStackTrace();
+                                    }
+                                }, json);
                             } else {
                                 Log.w(HomeFragment.TAG, "getLastLocation:exception", task.getException());
 
