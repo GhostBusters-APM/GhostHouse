@@ -224,9 +224,10 @@ public class HomeFragment extends Fragment {
         FloatingActionButton add_device_fab = view.findViewById(R.id.add_device_fab);
         add_device_fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                RemoteSyncService.addDevice(getContext(), userId, "lala", 12.5, -3, 1,
-                        true, "10.10.10.10");
+            public void onClick(final View v) {
+                Log.d(HomeFragment.TAG, "Add new device");
+                final Intent intent = new Intent(getActivity(), NewDevice.class);
+                startActivityForResult(intent, HomeFragment.ADD_DEVICE_REQUEST_CODE);
             }
         });
 
@@ -488,8 +489,13 @@ public class HomeFragment extends Fragment {
                                 service = ServiceProvider.getIotClient().register(getContext(), msg -> {
                                     try {
                                         service.disconnect();
+
+                                        RemoteSyncService.upadteDevices(HomeFragment.this.getContext(), userId);
+                                        Thread.sleep(100);
                                     } catch (final MqttException e) {
                                         e.printStackTrace();
+                                    } catch (final InterruptedException e) {
+
                                     }
                                 }, json);
                             } else {

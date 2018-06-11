@@ -1,5 +1,6 @@
 package com.github.ghostbusters.ghosthouse.db;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
@@ -191,4 +192,10 @@ public interface DevicePowerDataDao {
 
     @Insert
     void insertAll(DevicePowerData... devicePowerData);
+
+    @Query("SELECT * FROM DevicePowerData " +
+            "WHERE device_id = :deviceId " +
+            "  AND date >= :date")
+    LiveData<List<DevicePowerData>> getForDeviceIdAfterDateLive(int deviceId, @NonNull Date date);
+
 }
