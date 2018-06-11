@@ -154,8 +154,13 @@ public class RemoteSyncService extends JobIntentService {
         d.setState(state);
         d.setIp(ip);
         HttpEntity<Device> e = new HttpEntity<>(d);
-        Device d2 = t.postForObject(getUrl("device"), e, Device.class);
-
+        Device d2;
+        try {
+            d2 = t.postForObject(getUrl("device"), e, Device.class);
+        } catch (Exception ex) {
+            Log.d(TAG, "could not add device", ex);
+            return;
+        }
         Log.d(TAG, "Device: " + d2);
 
         RemoteSyncService.upadteDevices(getApplicationContext(), userId);
@@ -170,7 +175,13 @@ public class RemoteSyncService extends JobIntentService {
         Log.d(TAG, "query url: " + url);
         RestTemplate t = new RestTemplate();
         t.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-        Device[] devices = t.getForObject(url, Device[].class);
+        Device[] devices;
+        try {
+            devices = t.getForObject(url, Device[].class);
+        } catch (Exception ex) {
+            Log.d(TAG, "could not update devices", ex);
+            return;
+        }
 
         Log.d(TAG, "number of devices: " + devices.length);
 
@@ -198,9 +209,13 @@ public class RemoteSyncService extends JobIntentService {
         Log.d(TAG, "query url: " + url);
         RestTemplate t = new RestTemplate();
         t.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-        DevicePowerDtoResponse[] devicePowerResponse = t.getForObject(url,
-                DevicePowerDtoResponse[].class);
-
+        DevicePowerDtoResponse[] devicePowerResponse;
+        try {
+            devicePowerResponse = t.getForObject(url, DevicePowerDtoResponse[].class);
+        } catch (Exception ex) {
+            Log.d(TAG, "could not update device power data", ex);
+            return;
+        }
         Log.d(TAG, "number of power events: " + devicePowerResponse.length);
 
         List<DevicePowerData> devicePowerDataList = new ArrayList<>(devicePowerResponse.length);
