@@ -38,6 +38,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:tint="@color/colorWhite"
+        app:backgroundTint="@color/colorWhite"
+        app:rippleColor="@color/colorWhite"
         app:srcCompat="@android:drawable/ic_input_add" />
 
 </android.support.design.widget.CoordinatorLayout>

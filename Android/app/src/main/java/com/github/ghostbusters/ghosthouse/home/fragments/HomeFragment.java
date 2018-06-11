@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.provider.BaseColumns;
@@ -224,6 +225,8 @@ public class HomeFragment extends Fragment {
         RemoteSyncService.upadteDevices(getContext(), userId);
 
         FloatingActionButton add_device_fab = view.findViewById(R.id.add_device_fab);
+        add_device_fab.setBackgroundColor(Color.BLUE);
+        add_device_fab.setRippleColor(Color.WHITE);
         add_device_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
