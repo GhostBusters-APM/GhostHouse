@@ -90,7 +90,9 @@ public class HomeFragment extends Fragment {
     @Override
     public void onPause() {
         try {
-            service.disconnect();
+            if (service!=null){
+                service.disconnect();
+            }
         } catch (final Exception e) {
             e.printStackTrace();
         }
@@ -428,7 +430,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
-        service = ServiceProvider.getIotClient().switchOn(getContext(), "tcp://10.0.2.2:1883", null);
+        service = ServiceProvider.getIotClient().switchOn(getContext(), "tcp://10.0.2.2:1883", null,"");
     }
 
     private void saveInBD(final String name, final String id, final String lg, final String lt) {

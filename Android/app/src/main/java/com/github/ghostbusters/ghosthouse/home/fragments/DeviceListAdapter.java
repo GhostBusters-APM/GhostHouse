@@ -12,6 +12,10 @@ import android.widget.TextView;
 
 import com.github.ghostbusters.ghosthouse.R;
 import com.github.ghostbusters.ghosthouse.db.Device;
+import com.github.ghostbusters.ghosthouse.services.ServiceProvider;
+import com.github.ghostbusters.ghosthouse.services.iotClient.IotClient;
+
+import org.eclipse.paho.android.service.MqttAndroidClient;
 
 import java.util.List;
 
@@ -67,6 +71,9 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         holder.aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                ServiceProvider.getIotClient().switchOn(holder.itemView.getContext(), device.getIp(), msg -> {
+
+                },b?"ON":"OFF");
                 Log.d(DeviceListAdapter.class.getSimpleName(), "checked changed: " + b);
                 Log.d(DeviceListAdapter.class.getSimpleName(), device.toString());
             }
