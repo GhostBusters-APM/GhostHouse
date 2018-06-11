@@ -12,7 +12,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract DeviceDao deviceModel();
 
-    public abstract DevicePowerDataDao devicePowerDataDModel();
+    public abstract DevicePowerDataDao devicePowerDataModel();
 
     public static AppDatabase getInstance(Context context) {
         if (INSTANCE == null) {
