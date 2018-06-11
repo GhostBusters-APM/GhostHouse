@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_simple_one"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="fill"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.github.ghostbusters.ghosthouse.home.Home">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </FrameLayout>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <FrameLayout
+                android:id="@+id/frameLayout2"
+                android:layout_width="130dp"
+                android:layout_height="160dp">
+
+                <ImageButton
+                    android:id="@+id/fragment_a_imageButton"
+                    android:layout_width="128dp"
+                    android:layout_height="96dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="80dp"
+                    android:background="@null"
+                    android:contentDescription="Item"
+                    android:scaleType="centerCrop"
+                    android:transitionName="@string/simple_fragment_transition"
+                    app:srcCompat="@drawable/computer"
+                    tools:ignore="UnusedAttribute" />
+
+                <!--<ImageView-->
+                <!--android:id="@+id/fragment_a_imageView"-->
+                <!--android:layout_width="128dp"-->
+                <!--android:layout_height="96dp"-->
+                <!--android:layout_alignParentBottom="true"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:layout_marginBottom="80dp"-->
+                <!--android:contentDescription="@string/gorilla"-->
+                <!--android:scaleType="centerCrop"-->
+                <!--android:src="@drawable/computer"-->
+                <!--android:transitionName="@string/simple_fragment_transition"-->
+                <!--tools:ignore="UnusedAttribute" />-->
+
+                <!--<Button-->
+                <!--android:id="@+id/fragment_a_btn"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentStart="true"-->
+                <!--android:layout_alignParentTop="true"-->
+                <!--android:layout_marginStart="13dp"-->
+                <!--android:layout_marginTop="124dp"-->
+                <!--android:text="Fragment" />-->
+
+                <Switch
+                    android:id="@+id/switch1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:checked="false"
+                    android:gravity="center_horizontal"
+                    android:paddingBottom="20dp"
+                    android:thumbTint="@color/colorPrimary"
+                    android:trackTint="@android:color/darker_gray" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="130dp"
+                android:layout_height="160dp">
+
+                <ImageButton
+                    android:id="@+id/addImage"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_gravity="center"
+                    android:background="@null"
+                    app:srcCompat="@drawable/plus" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:autoText="false"
+                    android:paddingBottom="10dp"
+                    android:text="Add Device" />
+
+            </FrameLayout>
+
+        </TableRow>
+
+
+        <Button
+            android:id="@+id/add_but"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Añadir" />
+
+        <Button
+            android:id="@+id/update_but"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Actualizar" />
+
+        <Button
+            android:id="@+id/update_power_but"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Actualizar power" />
+
+        <Button
+            android:id="@+id/start_update_power_but"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Start Actualizar power" />
+
+        <Button
+            android:id="@+id/stop_update_power_but"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Stop Actualizar power" />
+
+        <Button
+            android:id="@+id/prueba_but"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Prueba" />
+    </LinearLayout>
+
+
+</RelativeLayout>
