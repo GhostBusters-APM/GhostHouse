@@ -3,7 +3,12 @@
 public class itemClick : MonoBehaviour {
 
 	
-    private bool change = false;
+    private bool off = true;
+	Animator anim;
+
+	void Start() {
+		anim = gameObject.GetComponent<Animator> ();
+	}
 
     void Create() {
 
@@ -20,11 +25,18 @@ public class itemClick : MonoBehaviour {
                 Debug.Log("Something Hit");
                 if (raycastHit.collider.name == "Switch")
                 {
-                    Debug.Log("Clicked changing color");
-                    change = !change;
-                    AndroidJavaObject arPlugin = new AndroidJavaObject("com.github.ghostbusters.ghosthouse.helper.unity.ArPlugin");
-                    arPlugin.Call("call", new AndroidPluginCallback());
-
+			if (off) {
+				Debug.Log ("Switch On");
+				anim.SetTrigger ("SwitchOn");
+				off = false;
+			} else 
+			{
+				Debug.Log ("Switch Off");
+				anim.SetTrigger ("SwitchOff");
+				off = true;
+			}
+			AndroidJavaObject arPlugin = new AndroidJavaObject ("com.github.ghostbusters.ghosthouse.helper.unity.ArPlugin");
+					arPlugin.Call ("call", new AndroidPluginCallback ());
                 }
                                
             }
