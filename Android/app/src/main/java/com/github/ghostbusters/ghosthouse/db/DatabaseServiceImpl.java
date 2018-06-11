@@ -34,11 +34,20 @@ public class DatabaseServiceImpl implements DatabaseService {
     public void updateDeviceList(String userId, List<Device> devices) {
         DeviceDao deviceDao = db.deviceModel();
 
+        Set<Integer> newDevicesIds = new HashSet<>();
+        for (Device device : devices) {
+            newDevicesIds.add(device.getDeviceId());
+        }
+
         List<Device> currentDevices = deviceDao.getDevicesOfUser(userId);
         Set<Integer> currentDevicesIds = new HashSet<>();
         for (Device device : currentDevices) {
             currentDevicesIds.add(device.getDeviceId());
+            if (!newDevicesIds.contains(device.getDeviceId())) {
+                deviceDao.delete(device);
+            }
         }
+
 
         for (Device device : devices) {
             if (currentDevicesIds.contains(device.getDeviceId())) {

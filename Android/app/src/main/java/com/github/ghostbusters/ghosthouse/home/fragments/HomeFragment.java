@@ -1,5 +1,6 @@
 package com.github.ghostbusters.ghosthouse.home.fragments;
 
+import android.arch.lifecycle.Observer;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -10,22 +11,23 @@ import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.ghostbusters.ghosthouse.R;
+import com.github.ghostbusters.ghosthouse.db.AppDatabase;
+import com.github.ghostbusters.ghosthouse.db.Device;
 import com.github.ghostbusters.ghosthouse.home.DeviceContract;
 import com.github.ghostbusters.ghosthouse.home.DevicesDbHelper;
 import com.github.ghostbusters.ghosthouse.newdevice.NewDevice;
@@ -44,6 +46,7 @@ import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -123,8 +126,8 @@ public class HomeFragment extends Fragment {
                              final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_home, container, false);
-        mLatitudeLabel = getResources().getString(R.string.latitude_label);
-        mLongitudeLabel = getResources().getString(R.string.longitude_label);
+//        mLatitudeLabel = getResources().getString(R.string.latitude_label);
+//        mLongitudeLabel = getResources().getString(R.string.longitude_label);
 //        this.mLatitudeText = (TextView) view.findViewById((R.id.latitude_text));
 //        this.mLongitudeText = (TextView) view.findViewById((R.id.longitude_text));
 
@@ -203,147 +206,224 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(final View view, @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final ArrayList<GhostDevice> devicesList = getDevices();
-        printDevices(devicesList);
-
-        final ImageButton imageView = view.findViewById(R.id.fragment_a_imageButton);
-
-        final ImageButton add = view.findViewById(R.id.addImage);
-
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                final DeviceDetailsFragment simpleFragmentB = new DeviceDetailsFragment();
-                if (!mIsDualPane) {
-                    getActivity().getSupportFragmentManager()
-                            .beginTransaction()
-                            .addSharedElement(imageView, ViewCompat.getTransitionName(imageView))
-                            .addToBackStack(HomeFragment.TAG)
-                            .replace(R.id.home_base_frame, simpleFragmentB)
-                            .commit();
-                } else {
-                    getActivity().getSupportFragmentManager()
-                            .beginTransaction()
-                            .addSharedElement(imageView, ViewCompat.getTransitionName(imageView))
-                            .addToBackStack(HomeFragment.TAG)
-                            .replace(R.id.fragment_device_details, simpleFragmentB)
-                            .commit();
-                }
+        final String userId;
+        if (HomeFragment.this.userId == null) {
+            final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount
+                    (getContext());
+            if (acct != null) {
+                userId = acct.getId();
+            } else {
+                userId = HomeFragment.LOCAL_TEST_USERID;
             }
-        });
+        } else {
+            userId = HomeFragment.this.userId;
+        }
 
+        RemoteSyncService.upadteDevices(getContext(), userId);
 
-        final Switch switchButton = view.findViewById(R.id.switch1);
-        switchButton.setOnCheckedChangeListener(this::onCheckedChanged);
-        add.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton add_device_fab = view.findViewById(R.id.add_device_fab);
+        add_device_fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(final View v) {
-                Log.d(HomeFragment.TAG, "Add new device");
-                final Intent intent = new Intent(getActivity(), NewDevice.class);
-                startActivityForResult(intent, HomeFragment.ADD_DEVICE_REQUEST_CODE);
-            }
-        });
-
-        final Button addButton = view.findViewById(R.id.add_but);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                final String userId;
-                if (HomeFragment.this.userId == null) {
-                    final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount
-                            (getContext());
-                    if (acct != null) {
-                        userId = acct.getId();
-                    } else {
-                        userId = HomeFragment.LOCAL_TEST_USERID;
-                    }
-                } else {
-                    userId = HomeFragment.this.userId;
-                }
+            public void onClick(View view) {
                 RemoteSyncService.addDevice(getContext(), userId, "lala", 12.5, -3, 1,
                         true, "10.10.10.10");
             }
         });
 
-        final Button updateButton = view.findViewById(R.id.update_but);
-        updateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                final String userId;
-                if (HomeFragment.this.userId == null) {
-                    final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount
-                            (getContext());
-                    if (acct != null) {
-                        userId = acct.getId();
-                    } else {
-                        userId = HomeFragment.LOCAL_TEST_USERID;
-                    }
-                } else {
-                    userId = HomeFragment.this.userId;
-                }
-                RemoteSyncService.upadteDevices(getContext(), userId);
-            }
-        });
+        RecyclerView deviceListView = view.findViewById(R.id.devices_rv);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
+        deviceListView.setLayoutManager(layoutManager);
+        final DeviceListAdapter adapter = new DeviceListAdapter();
+        deviceListView.setAdapter(adapter);
 
-        final Button updatePowerButton = view.findViewById(R.id.update_power_but);
-        updatePowerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                final String userId;
-                if (HomeFragment.this.userId == null) {
-                    final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount
-                            (getContext());
-                    if (acct != null) {
-                        userId = acct.getId();
-                    } else {
-                        userId = HomeFragment.LOCAL_TEST_USERID;
+        AppDatabase.getInstance(getContext()).deviceModel()
+                .getDevicesOfUserLive(userId)
+                .observe(this, new Observer<List<Device>>() {
+                    @Override
+                    public void onChanged(@Nullable List<Device> devices) {
+                        Log.d(TAG, "devices changed. Number of devices: " + devices.size());
+                        adapter.setDeviceList(devices);
                     }
-                } else {
-                    userId = HomeFragment.this.userId;
-                }
-                RemoteSyncService.updateDevicePowerData(getContext(), userId, 1);
-            }
-        });
+                });
 
-        final Button startUpdatePowerButton = view.findViewById(R.id.start_update_power_but);
-        startUpdatePowerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final String userId;
-                if (HomeFragment.this.userId == null) {
-                    final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount
-                            (getContext());
-                    if (acct != null) {
-                        userId = acct.getId();
-                    } else {
-                        userId = HomeFragment.LOCAL_TEST_USERID;
-                    }
-                } else {
-                    userId = HomeFragment.this.userId;
-                }
-                RemoteSyncService.startDevicePowerDataUpdates(getContext(), userId, 1);
-            }
-        });
 
-        final Button stopUpdatePowerButton = view.findViewById(R.id.stop_update_power_but);
-        stopUpdatePowerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final String userId;
-                if (HomeFragment.this.userId == null) {
-                    final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount
-                            (getContext());
-                    if (acct != null) {
-                        userId = acct.getId();
-                    } else {
-                        userId = HomeFragment.LOCAL_TEST_USERID;
-                    }
-                } else {
-                    userId = HomeFragment.this.userId;
-                }
-                RemoteSyncService.stopDevicePowerDataUpdates(getContext(), userId, 1);
-            }
-        });
+//        final ArrayList<GhostDevice> devicesList = getDevices();
+//        printDevices(devicesList);
+//
+//        final ImageButton imageView = view.findViewById(R.id.fragment_a_imageButton);
+//
+//        final ImageButton add = view.findViewById(R.id.addImage);
+
+//        imageView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(final View v) {
+//                final DeviceDetailsFragment simpleFragmentB = new DeviceDetailsFragment();
+//                if (!mIsDualPane) {
+//                    getActivity().getSupportFragmentManager()
+//                            .beginTransaction()
+//                            .addSharedElement(imageView, ViewCompat.getTransitionName(imageView))
+//                            .addToBackStack(HomeFragment.TAG)
+//                            .replace(R.id.home_base_frame, simpleFragmentB)
+//                            .commit();
+//                } else {
+//                    getActivity().getSupportFragmentManager()
+//                            .beginTransaction()
+//                            .addSharedElement(imageView, ViewCompat.getTransitionName(imageView))
+//                            .addToBackStack(HomeFragment.TAG)
+//                            .replace(R.id.fragment_device_details, simpleFragmentB)
+//                            .commit();
+//                }
+//            }
+//        });
+
+
+//        final Switch switchButton = view.findViewById(R.id.switch1);
+//        switchButton.setOnCheckedChangeListener(this::onCheckedChanged);
+//        add.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(final View v) {
+//                Log.d(HomeFragment.TAG, "Add new device");
+//                final Intent intent = new Intent(getActivity(), NewDevice.class);
+//                startActivityForResult(intent, HomeFragment.ADD_DEVICE_REQUEST_CODE);
+//            }
+//        });
+//
+//        final Button addButton = view.findViewById(R.id.add_but);
+//        addButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(final View view) {
+//                final String userId;
+//                if (HomeFragment.this.userId == null) {
+//                    final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount
+//                            (getContext());
+//                    if (acct != null) {
+//                        userId = acct.getId();
+//                    } else {
+//                        userId = HomeFragment.LOCAL_TEST_USERID;
+//                    }
+//                } else {
+//                    userId = HomeFragment.this.userId;
+//                }
+//                RemoteSyncService.addDevice(getContext(), userId, "lala", 12.5, -3, 1,
+//                        true, "10.10.10.10");
+//            }
+//        });
+//
+//        final Button updateButton = view.findViewById(R.id.update_but);
+//        updateButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(final View view) {
+//                final String userId;
+//                if (HomeFragment.this.userId == null) {
+//                    final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount
+//                            (getContext());
+//                    if (acct != null) {
+//                        userId = acct.getId();
+//                    } else {
+//                        userId = HomeFragment.LOCAL_TEST_USERID;
+//                    }
+//                } else {
+//                    userId = HomeFragment.this.userId;
+//                }
+//                RemoteSyncService.upadteDevices(getContext(), userId);
+//            }
+//        });
+//
+//        final Button updatePowerButton = view.findViewById(R.id.update_power_but);
+//        updatePowerButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(final View view) {
+//                final String userId;
+//                if (HomeFragment.this.userId == null) {
+//                    final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount
+//                            (getContext());
+//                    if (acct != null) {
+//                        userId = acct.getId();
+//                    } else {
+//                        userId = HomeFragment.LOCAL_TEST_USERID;
+//                    }
+//                } else {
+//                    userId = HomeFragment.this.userId;
+//                }
+//                RemoteSyncService.updateDevicePowerData(getContext(), userId, 1);
+//            }
+//        });
+//
+//        final Button startUpdatePowerButton = view.findViewById(R.id.start_update_power_but);
+//        startUpdatePowerButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                final String userId;
+//                if (HomeFragment.this.userId == null) {
+//                    final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount
+//                            (getContext());
+//                    if (acct != null) {
+//                        userId = acct.getId();
+//                    } else {
+//                        userId = HomeFragment.LOCAL_TEST_USERID;
+//                    }
+//                } else {
+//                    userId = HomeFragment.this.userId;
+//                }
+//                RemoteSyncService.startDevicePowerDataUpdates(getContext(), userId, 1);
+//            }
+//        });
+//
+//        final Button stopUpdatePowerButton = view.findViewById(R.id.stop_update_power_but);
+//        stopUpdatePowerButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                final String userId;
+//                if (HomeFragment.this.userId == null) {
+//                    final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount
+//                            (getContext());
+//                    if (acct != null) {
+//                        userId = acct.getId();
+//                    } else {
+//                        userId = HomeFragment.LOCAL_TEST_USERID;
+//                    }
+//                } else {
+//                    userId = HomeFragment.this.userId;
+//                }
+//                RemoteSyncService.stopDevicePowerDataUpdates(getContext(), userId, 1);
+//            }
+//        });
+//
+//        final String userId;
+//        if (HomeFragment.this.userId == null) {
+//            final GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount
+//                    (getContext());
+//            if (acct != null) {
+//                userId = acct.getId();
+//            } else {
+//                userId = HomeFragment.LOCAL_TEST_USERID;
+//            }
+//        } else {
+//            userId = HomeFragment.this.userId;
+//        }
+//        LiveData<List<Device>> userDevices = AppDatabase.getInstance(getContext())
+//                .deviceModel()
+//                .getDevicesOfUserLive(userId);
+//        userDevices.observe(this, new Observer<List<Device>>() {
+//            @Override
+//            public void onChanged(@Nullable List<Device> devices) {
+//                Log.d(TAG, "LiveData Changed");
+//                if (devices == null) {
+//                    Log.d(TAG, "devices is null");
+//                } else {
+//                    Log.d(TAG, "livedata number of devices: " + devices.size());
+//                }
+//            }
+//        });
+//
+//        Button prueba = view.findViewById(R.id.prueba_but);
+//        prueba.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(getContext(), Prueba.class);
+//                startActivity(intent);
+//            }
+//        });
     }
 
     public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
