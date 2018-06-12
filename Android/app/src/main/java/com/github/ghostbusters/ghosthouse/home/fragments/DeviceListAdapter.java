@@ -59,8 +59,20 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
 
     @Override
     public DeviceListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.device_type1_layout, parent, false);
+        View v;
+        switch (viewType) {
+            case 1:
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.device_type1_layout, parent, false);
+                break;
+            case 2:
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.device_type2_layout, parent, false);
+                break;
+            default:
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.device_type1_layout, parent, false);
+        }
         return new ViewHolder(v);
     }
 
@@ -81,6 +93,10 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         return data == null ? 0 : data.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return data.get(position).getType();
+    }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         final TextView deviceNameTv;
