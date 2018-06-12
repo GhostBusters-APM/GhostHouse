@@ -103,7 +103,7 @@ public class HomeFragment extends Fragment {
         }
 
         /* Schedule an update of the devices when the fragment is shown */
-        RemoteSyncService.upadteDevices(getContext(), userId);
+        RemoteSyncService.updateDevices(getContext(), userId);
 
         /* Set up add device button callback */
         FloatingActionButton add_device_fab = view.findViewById(R.id.add_device_fab);
@@ -133,7 +133,6 @@ public class HomeFragment extends Fragment {
                             (devices == null? 0 : devices.size()));
                     adapter.setDeviceList(devices);
                 });
-
     }
 
     private void saveDevice(final String name, final String wifi, final String password) {
@@ -170,7 +169,7 @@ public class HomeFragment extends Fragment {
                                 try {
                                     service.disconnect();
 
-                                    RemoteSyncService.upadteDevices(HomeFragment.this.getContext(), userId);
+                                    RemoteSyncService.updateDevices(HomeFragment.this.getContext(), userId);
                                     Thread.sleep(100);
                                 } catch (final MqttException | InterruptedException e) {
                                     e.printStackTrace();

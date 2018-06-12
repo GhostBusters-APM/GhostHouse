@@ -14,7 +14,7 @@ public class UpdateDevicesReceiver extends BroadcastReceiver {
         final Bundle extras = intent.getExtras();
         if (extras != null && extras.containsKey(USER_ID)) {
             final String userId = extras.getString(USER_ID);
-            RemoteSyncService.upadteDevices(context, userId);
+            RemoteSyncService.updateDevices(context, userId);
         }
     }
 }
