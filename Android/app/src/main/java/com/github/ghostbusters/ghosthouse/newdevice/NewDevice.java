@@ -49,11 +49,11 @@ public class NewDevice
     }
 
     @Override
-    public void onNewDevice(final String deviceId, final String deviceName, final String password) {
-        Log.d(NewDevice.TAG, String.valueOf(deviceId));
+    public void onNewDevice(final String nombre, final String wifi, final String password) {
+        Log.d(NewDevice.TAG, String.valueOf(nombre));
         final Intent result = new Intent();
-        result.putExtra(NewDevice.DEVICE_WIFI_SSID_RESULT, deviceId);
-        result.putExtra(NewDevice.DEVICE_NAME_RESULT, deviceName);
+        result.putExtra(NewDevice.DEVICE_WIFI_SSID_RESULT, wifi);
+        result.putExtra(NewDevice.DEVICE_NAME_RESULT, nombre);
         result.putExtra(NewDevice.DEVICE_PASSWORD_RESULT, password);
         setResult(Activity.RESULT_OK, result);
 

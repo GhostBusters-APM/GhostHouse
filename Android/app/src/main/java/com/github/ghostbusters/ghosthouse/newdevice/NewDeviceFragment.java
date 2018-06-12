@@ -27,8 +27,10 @@ import com.github.ghostbusters.ghosthouse.services.ServiceProvider;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class NewDeviceFragment extends Fragment {
 
@@ -155,24 +157,31 @@ public class NewDeviceFragment extends Fragment {
             wifi.setWifiEnabled(true);
         }
         getWifiResults(wifi);
-        broadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(final Context c, final Intent intent) {
-                getWifiResults(wifi);
-                getContext().unregisterReceiver(broadcastReceiver);
-                broadcastReceiver = null;
-            }
-        };
-        getActivity().registerReceiver(broadcastReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-        wifi.startScan();
+//        broadcastReceiver = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(final Context c, final Intent intent) {
+//                getWifiResults(wifi);
+//                getContext().unregisterReceiver(broadcastReceiver);
+//                broadcastReceiver = null;
+//            }
+//        };
+//        getActivity().registerReceiver(broadcastReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+//        wifi.startScan();
     }
 
     private void getWifiResults(final WifiManager wifi) {
         final List<ScanResult> scanResults = wifi.getScanResults();
-        final String[] arraySpinner = new String[scanResults.size()];
+
         int index = 0;
+        final Set<String> results = new HashSet<String>();
         for (final ScanResult s : scanResults) {
-            arraySpinner[index++] = s.SSID;
+            results.add(s.SSID);
+        }
+
+        final String[] arraySpinner = new String[results.size()];
+        int i = 0;
+        for (String ssid : results){
+            arraySpinner[i++]=ssid;
         }
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_spinner_item, arraySpinner);
