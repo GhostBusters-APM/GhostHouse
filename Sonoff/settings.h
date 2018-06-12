@@ -7,17 +7,21 @@
 
 #define CURRENT_MODE HIGH
 
-#define NTP_OFFSET 60*60
-#define NTP_INTERVAL 60*1000
-#define NTP_ADDRESS "europe.pool.ntp.org"
-
-#define SERVER "192.168.0.21"
-#define PORT 1883
-
-#define DEVICE_ID  "S1"
-
-#define NETWORK "Tech_D0023104"
-#define SSID_PASSWORD "CUNRVPJM"
+#define SERVER "alexperal.com"
+#define PORT 8888
 
 #define INTERVAL 60*60
+
+unsigned long deviceId = 0;
+String userId = "0";
+String name = "device1";
+String latitude = "0";
+String longitude = "0";
+int type = 1;
+boolean state = false;
+boolean reg = true;
+
+String NETWORK = "AndroidAP";
+String SSID_PASSWORD = "cpkv5220";
+
 
