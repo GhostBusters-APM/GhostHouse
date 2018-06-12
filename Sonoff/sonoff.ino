@@ -138,6 +138,9 @@ void loop() {
     }
     lastReport = timeClient.getEpochTime();
     kwh = 0;
+    MQTT_server_onData(callback);
+    MQTT_server_start(1883, 30, 30);
+    MQTT_local_subscribe((unsigned char *)"#", 0);
     reg = true;
   }
   Serial.println("Connected to the WiFi network");
