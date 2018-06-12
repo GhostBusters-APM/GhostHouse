@@ -9,7 +9,6 @@ import time
 
 URLFORMAT = 'http://{}:{}/devicePower'
 DATEFORMAT = '%Y%m%d%H%M%S'
-diferencia = datetime.timedelta(seconds=5)
 
 MENOR = 0.0
 MAYOR = 100.0
@@ -26,6 +25,7 @@ def post_data(url, deviceID, value, then, now):
     res = request.urlopen(req, bodybytes)
 
 def post_loop(url, deviceId, interval):
+    diferencia = datetime.timedelta(seconds=interval)
     while True:
         now = datetime.datetime.now()
         then = now - diferencia
@@ -36,7 +36,7 @@ def post_loop(url, deviceId, interval):
     
 def main(argv):
     if len(argv) != 5:
-        print('Usage: %s <host> <port> <deviceId> <interval>'.format(argv[0]))
+        print('Usage: {} <host> <port> <deviceId> <interval>'.format(argv[0]))
         return
     
     host = argv[1]
