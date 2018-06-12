@@ -68,15 +68,11 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
     public void onBindViewHolder(DeviceListAdapter.ViewHolder holder, int position) {
         final Device device = data.get(position);
         holder.deviceNameTv.setText(device.getName());
-        holder.aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                ServiceProvider.getIotClient().switchOn(holder.itemView.getContext(), device.getIp(), msg -> {
-
-                },b?"ON":"OFF");
-                Log.d(DeviceListAdapter.class.getSimpleName(), "checked changed: " + b);
-                Log.d(DeviceListAdapter.class.getSimpleName(), device.toString());
-            }
+        holder.aSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
+            ServiceProvider.getIotClient()
+                    .switchOn(holder.itemView.getContext(), device.getIp(), msg -> {},b?"ON":"OFF");
+            Log.d(DeviceListAdapter.class.getSimpleName(), "checked changed: " + b);
+            Log.d(DeviceListAdapter.class.getSimpleName(), device.toString());
         });
     }
 
@@ -87,8 +83,8 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
 
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView deviceNameTv;
-        Switch aSwitch;
+        final TextView deviceNameTv;
+        final Switch aSwitch;
 
         ViewHolder(View v) {
             super(v);

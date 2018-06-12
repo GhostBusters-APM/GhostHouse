@@ -98,6 +98,9 @@ public class RemoteSyncService extends JobIntentService {
     public static void startDevicePowerDataUpdates(Context context, String userId, int deviceId) {
         updateDevicePowerData(context, userId, deviceId);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager == null) {
+            return;
+        }
         alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
                 SystemClock.elapsedRealtime() + 5 * 1000,
                 5 * 1000,
@@ -106,6 +109,9 @@ public class RemoteSyncService extends JobIntentService {
 
     public static void stopDevicePowerDataUpdates(Context context, String userId, int deviceId) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager == null) {
+            return;
+        }
         alarmManager.cancel(buildDevicePowerDataUpdatesIntent(context, userId, deviceId));
     }
 
@@ -193,6 +199,9 @@ public class RemoteSyncService extends JobIntentService {
         PendingIntent pendingIntent = PendingIntent
                 .getBroadcast(this, 0, updateIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager == null) {
+            return;
+        }
         alarmManager.set(AlarmManager.ELAPSED_REALTIME,
                 SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_FIFTEEN_MINUTES,
                 pendingIntent);
