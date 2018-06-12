@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.JobIntentService;
 import android.util.Log;
 
+import com.github.ghostbusters.ghosthouse.db.AppDatabase;
 import com.github.ghostbusters.ghosthouse.db.DatabaseService;
 import com.github.ghostbusters.ghosthouse.db.DatabaseServiceImpl;
 import com.github.ghostbusters.ghosthouse.db.Device;
@@ -25,6 +26,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 
 public class RemoteSyncService extends JobIntentService {
@@ -52,6 +54,11 @@ public class RemoteSyncService extends JobIntentService {
     private static final String UPDATE_DEVICE_POWER_DATA_USERID_PARAM = "userId";
     private static final String UPDATE_DEVICE_POWER_DATA_DEVICEID_PARAM = "deviceId";
 
+    /*
+     * Enqueue addition of a device to the backend.
+     *
+     * Currently unused as registration is done by the IoT device.
+     */
     public static void addDevice(Context context, String userId, String name, double lat,
                                  double lon, int type, boolean state, String ip) {
         Intent work = new Intent(context, RemoteSyncService.class);
@@ -67,7 +74,10 @@ public class RemoteSyncService extends JobIntentService {
         enqueueWork(context, work);
     }
 
-    public static void upadteDevices(Context context, String userId) {
+    /*
+     * Enqueue update for user devices.
+     */
+    public static void updateDevices(Context context, String userId) {
         Intent work = new Intent(context, RemoteSyncService.class);
         work.setAction(ACTION_UPDATE_DEVICES);
         work.putExtra(UPDATE_DEVICES_USERID_PARAM, userId);
@@ -75,6 +85,9 @@ public class RemoteSyncService extends JobIntentService {
         enqueueWork(context, work);
     }
 
+    /*
+     * Enqueue update  for power data of the device.
+     */
     public static void updateDevicePowerData(Context context, String userId, int deviceId) {
         Intent work = new Intent(context, RemoteSyncService.class);
         work.setAction(ACTION_UPDATE_DEVICE_POWER_DATA);
@@ -95,17 +108,29 @@ public class RemoteSyncService extends JobIntentService {
                 PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
+    /*
+     * Start automatic updates of power data of a device.
+     */
     public static void startDevicePowerDataUpdates(Context context, String userId, int deviceId) {
         updateDevicePowerData(context, userId, deviceId);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager == null) {
+            return;
+        }
         alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
                 SystemClock.elapsedRealtime() + 5 * 1000,
                 5 * 1000,
                 buildDevicePowerDataUpdatesIntent(context, userId, deviceId));
     }
 
+    /*
+     * Stops automatic updates of power data of a device.
+     */
     public static void stopDevicePowerDataUpdates(Context context, String userId, int deviceId) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager == null) {
+            return;
+        }
         alarmManager.cancel(buildDevicePowerDataUpdatesIntent(context, userId, deviceId));
     }
 
@@ -135,6 +160,8 @@ public class RemoteSyncService extends JobIntentService {
 
     private void doAddDevice(@NonNull Intent intent) {
         Log.d(TAG, "doAddDevice");
+
+        /* Retrieve param from intent */
         String userId = intent.getStringExtra(ADD_DEVICE_USERID_PARAM);
         String name = intent.getStringExtra(ADD_DEVICE_NAME_PARAM);
         double lat = intent.getDoubleExtra(ADD_DEVICE_LAT_PARAM, 0);
@@ -143,6 +170,7 @@ public class RemoteSyncService extends JobIntentService {
         boolean state = intent.getBooleanExtra(ADD_DEVICE_STATE_PARAM, true);
         String ip = intent.getStringExtra(ADD_DEVICE_IP_PARAM);
 
+        /* Build request body */
         RestTemplate t = new RestTemplate();
         t.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         Device d = new Device();
@@ -154,6 +182,8 @@ public class RemoteSyncService extends JobIntentService {
         d.setState(state);
         d.setIp(ip);
         HttpEntity<Device> e = new HttpEntity<>(d);
+
+        /* Make request */
         Device d2;
         try {
             d2 = t.postForObject(getUrl("device"), e, Device.class);
@@ -163,18 +193,23 @@ public class RemoteSyncService extends JobIntentService {
         }
         Log.d(TAG, "Device: " + d2);
 
-        RemoteSyncService.upadteDevices(getApplicationContext(), userId);
+        /* Enqueue update of local list of devices to get the just added device. */
+        RemoteSyncService.updateDevices(getApplicationContext(), userId);
     }
 
     private void doUpdateDevices(@NonNull Intent intent) {
         Log.d(TAG, "doUpdateDevices");
+
         String userId = intent.getStringExtra(UPDATE_DEVICES_USERID_PARAM);
+
         String url = UriComponentsBuilder.fromHttpUrl(getUrl("device"))
                 .queryParam("userId", userId)
                 .toUriString();
         Log.d(TAG, "query url: " + url);
+
         RestTemplate t = new RestTemplate();
         t.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+
         Device[] devices;
         try {
             devices = t.getForObject(url, Device[].class);
@@ -188,11 +223,15 @@ public class RemoteSyncService extends JobIntentService {
         DatabaseService dbService = DatabaseServiceImpl.getInstance(getApplicationContext());
         dbService.updateDeviceList(userId, Arrays.asList(devices));
 
+        /* Schedule an update in 15 minutes */
         Intent updateIntent = new Intent(this, UpdateDevicesReceiver.class);
         updateIntent.putExtra(UpdateDevicesReceiver.USER_ID, userId);
         PendingIntent pendingIntent = PendingIntent
                 .getBroadcast(this, 0, updateIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager == null) {
+            return;
+        }
         alarmManager.set(AlarmManager.ELAPSED_REALTIME,
                 SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_FIFTEEN_MINUTES,
                 pendingIntent);
@@ -200,15 +239,38 @@ public class RemoteSyncService extends JobIntentService {
 
     private void doUpdateDevicePowerData(@NonNull Intent intent) {
         Log.d(TAG, "doUpdateDevicePowerData");
+
         String userId = intent.getStringExtra(UPDATE_DEVICE_POWER_DATA_USERID_PARAM);
         int deviceId = intent.getIntExtra(UPDATE_DEVICE_POWER_DATA_DEVICEID_PARAM, -1);
+
+        /*
+         * Check the device is in the local database before updating.
+         *
+         * Adding device power data for a device that is not in a database
+         * will err out with a SQLiteConstraintException when inserting the data
+         * in the database.
+         *
+         * This shields against errors that should not happen, but should also not
+         * crash the application.
+         */
+        Device device = AppDatabase.getInstance(this).deviceModel()
+                .getDeviceByDeviceIdAndUserId(deviceId, userId);
+        if (device == null) {
+            Log.d(TAG, String.format(Locale.ENGLISH,
+                    "trying to update power data of a device that is not in the database. userId=%s, deviceId=%d",
+                    userId, deviceId));
+            return;
+        }
+
         String url = UriComponentsBuilder.fromHttpUrl(getUrl("/devicePower"))
                 .queryParam("userId", userId)
                 .queryParam("deviceId", deviceId)
                 .toUriString();
         Log.d(TAG, "query url: " + url);
+
         RestTemplate t = new RestTemplate();
         t.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+
         DevicePowerDtoResponse[] devicePowerResponse;
         try {
             devicePowerResponse = t.getForObject(url, DevicePowerDtoResponse[].class);

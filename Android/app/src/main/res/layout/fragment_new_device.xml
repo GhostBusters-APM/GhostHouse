@@ -123,14 +123,46 @@
         android:id="@+id/loading_devices_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
+        android:text="@string/loading_devices_tv_str"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/loading_devices_pb"
-        android:text="@string/loading_devices_tv_str"/>
+        app:layout_constraintTop_toBottomOf="@id/loading_devices_pb" />
+
+    <TextView
+        android:id="@+id/wifi_enabled_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/wifi_check"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loading_devices_tv" />
+
+    <ImageView
+        android:id="@+id/check_image"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="28dp"
+        android:baselineAlignBottom="true"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@+id/wifi_enabled_tv"
+        app:layout_constraintTop_toBottomOf="@+id/loading_devices_tv"
+        app:srcCompat="@drawable/animated_check"
+        />
+    <ImageView
+        android:id="@+id/check_cross"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:baselineAlignBottom="true"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@+id/wifi_enabled_tv"
+        app:layout_constraintTop_toBottomOf="@+id/loading_devices_tv"
+        android:src="@drawable/animated_cross"/>
+
 
 
 </android.support.constraint.ConstraintLayout>

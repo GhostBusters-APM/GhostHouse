@@ -20,6 +20,11 @@ public interface DeviceDao {
     @Query("SELECT * from Device WHERE userId = :userId")
     LiveData<List<Device>> getDevicesOfUserLive(String userId);
 
+    @Query("SELECT * from Device " +
+            "WHERE deviceId = :deviceId " +
+            "  AND userId = :userId")
+    Device getDeviceByDeviceIdAndUserId(int deviceId, String userId);
+
     @Insert
     void insertAll(Device... devices);
 

@@ -59,8 +59,20 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
 
     @Override
     public DeviceListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.device_type1_layout, parent, false);
+        View v;
+        switch (viewType) {
+            case 1:
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.device_type1_layout, parent, false);
+                break;
+            case 2:
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.device_type2_layout, parent, false);
+                break;
+            default:
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.device_type1_layout, parent, false);
+        }
         return new ViewHolder(v);
     }
 
@@ -68,15 +80,11 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
     public void onBindViewHolder(DeviceListAdapter.ViewHolder holder, int position) {
         final Device device = data.get(position);
         holder.deviceNameTv.setText(device.getName());
-        holder.aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                ServiceProvider.getIotClient().switchOn(holder.itemView.getContext(), device.getIp(), msg -> {
-
-                },b?"ON":"OFF");
-                Log.d(DeviceListAdapter.class.getSimpleName(), "checked changed: " + b);
-                Log.d(DeviceListAdapter.class.getSimpleName(), device.toString());
-            }
+        holder.aSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
+            ServiceProvider.getIotClient()
+                    .switchOn(holder.itemView.getContext(), device.getIp(), msg -> {},b?"ON":"OFF");
+            Log.d(DeviceListAdapter.class.getSimpleName(), "checked changed: " + b);
+            Log.d(DeviceListAdapter.class.getSimpleName(), device.toString());
         });
     }
 
@@ -85,10 +93,14 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         return data == null ? 0 : data.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return data.get(position).getType();
+    }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView deviceNameTv;
-        Switch aSwitch;
+        final TextView deviceNameTv;
+        final Switch aSwitch;
 
         ViewHolder(View v) {
             super(v);

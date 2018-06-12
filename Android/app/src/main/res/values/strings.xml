@@ -69,7 +69,8 @@
     <string name="cancel">Disagree</string>
     <string name="device_password_tv_str">Wifi Password</string>
     <string name="device_password_et_hint_str">Password</string>
-    <string name="title_activity_prueba">Prueba</string>
-    <string name="action_settings">Settings</string>
     <string name="device_ib_content_description">Device details</string>
+    <string name="wifi_check">Checking Wifi...</string>
+    <string name="wifi_enabled">Wifi Enabled</string>
+    <string name="wifi_activated">Wifi Activated</string>
 </resources>
