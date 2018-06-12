@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.43784928, g: 0.48577368, b: 0.5660491, a: 1}
+  m_IndirectSpecularColor: {r: 0.43784893, g: 0.48577327, b: 0.5660483, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -219,19 +219,31 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: 07a08adb33a750a4baf96fc07a30dfde, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: 07a08adb33a750a4baf96fc07a30dfde, type: 3}
       propertyPath: m_LocalScale.x
-      value: 2.8146856
+      value: 9.882304
       objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: 07a08adb33a750a4baf96fc07a30dfde, type: 3}
       propertyPath: m_LocalScale.y
-      value: 2.814685
+      value: 9.8823
       objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: 07a08adb33a750a4baf96fc07a30dfde, type: 3}
       propertyPath: m_LocalScale.z
-      value: 2.814685
+      value: 9.8823
+      objectReference: {fileID: 0}
+    - target: {fileID: 9500000, guid: 07a08adb33a750a4baf96fc07a30dfde, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: e4b21b43185c9764e9e8c8f8004bdb0c, type: 2}
+    - target: {fileID: 10800004, guid: 07a08adb33a750a4baf96fc07a30dfde, type: 3}
+      propertyPath: m_Intensity
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 10800002, guid: 07a08adb33a750a4baf96fc07a30dfde, type: 3}
+      propertyPath: m_Intensity
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 07a08adb33a750a4baf96fc07a30dfde, type: 3}
@@ -261,8 +273,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.05, y: 0.05, z: 0.11}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.06, y: 0.06, z: 0.11}
+  m_Center: {x: 0, y: 0.01, z: 0}
 --- !u!43 &1131892011
 Mesh:
   m_ObjectHideFlags: 0

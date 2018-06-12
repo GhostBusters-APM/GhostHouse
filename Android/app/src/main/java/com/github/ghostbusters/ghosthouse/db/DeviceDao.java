@@ -1,5 +1,6 @@
 package com.github.ghostbusters.ghosthouse.db;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -15,6 +16,14 @@ public interface DeviceDao {
 
     @Query("SELECT * from Device WHERE userId = :userId")
     List<Device> getDevicesOfUser(String userId);
+
+    @Query("SELECT * from Device WHERE userId = :userId")
+    LiveData<List<Device>> getDevicesOfUserLive(String userId);
+
+    @Query("SELECT * from Device " +
+            "WHERE deviceId = :deviceId " +
+            "  AND userId = :userId")
+    Device getDeviceByDeviceIdAndUserId(int deviceId, String userId);
 
     @Insert
     void insertAll(Device... devices);

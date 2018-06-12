@@ -12,15 +12,15 @@ import lombok.Data;
 
 @Data
 @Entity(foreignKeys = @ForeignKey(entity = Device.class,
-                                  parentColumns = "id",
+                                  parentColumns = "deviceId",
                                   childColumns = "device_id"))
 @TypeConverters({DateConverter.class})
 public class DevicePowerData {
     @PrimaryKey
-    private int id;
+    private int devicePowerDataId;
 
     @ColumnInfo(name = "device_id")
-    private int deviceId;
+    private int device;
 
     private Date date;
 

@@ -11,7 +11,7 @@ import lombok.Data;
 @TypeConverters({DeviceStateConverter.class})
 public class Device {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private int deviceId;
 
     /* Can be null if the device is not assigned to an user */
     private String userId;
@@ -24,6 +24,7 @@ public class Device {
 
     private int type;
 
-    private DeviceState state;
+    private boolean state;
+    private String ip;
 
 }

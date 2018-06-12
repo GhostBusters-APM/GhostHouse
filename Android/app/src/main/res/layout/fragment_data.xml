@@ -7,10 +7,7 @@
     android:background="#F5F5F6"
     tools:context=".home.fragments.DataFragment">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/activity_main_swipe_refresh_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+
 
 
         <ScrollView
@@ -24,6 +21,14 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
+                <Spinner
+                    android:id="@+id/spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:spinnerMode="dropdown"
+                    />
+
 
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/lineChart"
@@ -33,8 +38,8 @@
                     android:layout_margin="5dp"
                     android:title="Graph Title" />
 
-                <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/pieChart"
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/barChart"
                     android:layout_width="match_parent"
                     android:layout_height="278dp"
                     android:layout_below="@+id/linetext"
@@ -42,11 +47,12 @@
                     android:title="Graph Title" />
 
                 <TextView
-                    android:id="@+id/editText4"
+                    android:id="@+id/textViewMax"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:contentDescription="2037 kw"
                     android:layout_marginStart="10dp"
+                    android:layout_marginBottom="10dp"
                     android:ems="10"
                     android:inputType="textPersonName"
                     android:text="Six month consumption"
@@ -54,19 +60,12 @@
                     android:textSize="24sp" />
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="29dp"
-                    android:text="2035 kw"
-                    android:layout_marginStart="10dp"
-                    android:textColor="@color/text"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/editText5"
+                    android:id="@+id/textViewMin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:contentDescription="2037 kw"
                     android:layout_marginStart="10dp"
+                    android:layout_marginBottom="10dp"
                     android:ems="10"
                     android:inputType="textPersonName"
                     android:text="Last year mean consumption"
@@ -74,16 +73,19 @@
                     android:textSize="24sp" />
 
                 <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/textViewMedia"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="2037 kw"
                     android:layout_marginStart="10dp"
-                    android:layout_height="29dp"
-                    android:text="450 kw"
+                    android:layout_marginBottom="10dp"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:text="Last year mean consumption"
                     android:textColor="@color/text"
-                    android:textSize="18sp" />
+                    android:textSize="24sp" />
 
             </LinearLayout>
         </ScrollView>
-    </android.support.v4.widget.SwipeRefreshLayout>
 
 </android.support.constraint.ConstraintLayout>

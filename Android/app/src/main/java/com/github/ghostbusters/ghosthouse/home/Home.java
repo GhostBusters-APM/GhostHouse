@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -71,7 +71,7 @@ public class Home extends AppCompatActivity implements UserFragment.OnFragmentIn
 
 
 
-        final BottomNavigationView navigation = (BottomNavigationView) this.findViewById(R.id.navigation);
+        final BottomNavigationView navigation = this.findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this::onNavigationBarItemSelected);
         BottomBarHelper.disableShiftMode(navigation);
 
@@ -97,16 +97,6 @@ public class Home extends AppCompatActivity implements UserFragment.OnFragmentIn
                     .commit();
         }
 
-
-
-        //		Soporte para la transicion
-
-
-
-
-//        //instancia a la BD
-//        final DevicesDbHelper mDbHelper = new DevicesDbHelper(this);
-//        final SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         if (!this.checkPermissions()) {
             this.requestPermissions();
@@ -212,6 +202,18 @@ public class Home extends AppCompatActivity implements UserFragment.OnFragmentIn
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Log.i(Home.TAG, "Landscape");
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            Log.i(Home.TAG, "Portrait");
+        }
     }
 
     @Override

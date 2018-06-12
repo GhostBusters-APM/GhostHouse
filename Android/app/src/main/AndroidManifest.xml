@@ -4,9 +4,16 @@
     package="com.github.ghostbusters.ghosthouse">
 
     <!-- To access Google+ APIs: -->
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
 
@@ -20,11 +27,11 @@
         tools:replace="android:icon,android:theme">
         <activity
             android:name=".home.Home"
-            android:label="@string/title_home">
-
-        </activity>
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_home" />
         <activity
             android:name=".newdevice.NewDevice"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_new_device"
             android:parentActivityName=".home.Home"
             android:theme="@style/AppTheme">
@@ -42,11 +49,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        android:label="@string/title_activity_login"
-        android:theme="@style/AppTheme" />
         <activity android:name=".home.ArActivityWrapper" />
 
-        <!-- Declaring broadcast receiver for BOOT_COMPLETED event. -->
+        <!-- Declaring broadcast receiver for BOOT_COMPLETED, QUICKBOOT_POWERON, REBOOT events. -->
         <receiver android:name=".wifiservice.BootCompletedReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -56,6 +61,21 @@
         </receiver>
 
         <service android:name=".wifiservice.WifiService" />
+        <service android:name="org.eclipse.paho.android.service.MqttService" />
+        <service
+            android:name=".syncservice.RemoteSyncService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <receiver
+            android:name=".syncservice.UpdateDevicesReceiver"
+            android:enabled="true"
+            android:exported="false" />
+
+        <receiver
+            android:name=".syncservice.UpdateDevicePowerDataReceiver"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>
