@@ -51,7 +51,7 @@
         </activity>
         <activity android:name=".home.ArActivityWrapper" />
 
-        <!-- Declaring broadcast receiver for BOOT_COMPLETED event. -->
+        <!-- Declaring broadcast receiver for BOOT_COMPLETED, QUICKBOOT_POWERON, REBOOT events. -->
         <receiver android:name=".wifiservice.BootCompletedReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
