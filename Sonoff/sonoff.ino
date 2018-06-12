@@ -113,7 +113,9 @@ void setup() {
   hlw8012.begin(CF_PIN, CF1_PIN, SEL_PIN, CURRENT_MODE, false, 500000);
 
   MQTT_server_onData(callback);
-  MQTT_server_start(1883, 30, 30);
+  while (!MQTT_server_start(1883, 30, 30)) {
+    Serial.println("Iniciando Broker MQTT");;
+  }
   MQTT_local_subscribe((unsigned char *)"#", 0);
 
   digitalWrite(LED_PIN, 1);
@@ -139,7 +141,9 @@ void loop() {
     lastReport = timeClient.getEpochTime();
     kwh = 0;
     MQTT_server_onData(callback);
-    MQTT_server_start(1883, 30, 30);
+    while (!MQTT_server_start(1883, 30, 30)) {
+      Serial.println("Iniciando Broker MQTT");;
+    }
     MQTT_local_subscribe((unsigned char *)"#", 0);
     reg = true;
   }
