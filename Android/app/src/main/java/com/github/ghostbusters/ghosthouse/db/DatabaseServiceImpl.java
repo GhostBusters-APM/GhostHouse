@@ -33,6 +33,7 @@ public class DatabaseServiceImpl implements DatabaseService {
     @Override
     public void updateDeviceList(String userId, List<Device> devices) {
         DeviceDao deviceDao = db.deviceModel();
+        DevicePowerDataDao devicePowerDataDao = db.devicePowerDataModel();
 
         Set<Integer> newDevicesIds = new HashSet<>();
         for (Device device : devices) {
@@ -44,6 +45,7 @@ public class DatabaseServiceImpl implements DatabaseService {
         for (Device device : currentDevices) {
             currentDevicesIds.add(device.getDeviceId());
             if (!newDevicesIds.contains(device.getDeviceId())) {
+                devicePowerDataDao.deleteAll(device.getDeviceId());
                 deviceDao.delete(device);
             }
         }
@@ -60,7 +62,7 @@ public class DatabaseServiceImpl implements DatabaseService {
 
     @Override
     public void updateDevicePower(int deviceId, List<DevicePowerData> devicePowerData) {
-        DevicePowerDataDao devicePowerDataDao = db.devicePowerDataDModel();
+        DevicePowerDataDao devicePowerDataDao = db.devicePowerDataModel();
 
         devicePowerDataDao.deleteAll(deviceId);
         devicePowerDataDao.insertAll(devicePowerData.toArray(new DevicePowerData[devicePowerData

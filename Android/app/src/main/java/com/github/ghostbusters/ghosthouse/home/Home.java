@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,7 +19,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.github.ghostbusters.ghosthouse.R;
 import com.github.ghostbusters.ghosthouse.helper.view.BottomBarHelper;
@@ -73,7 +71,7 @@ public class Home extends AppCompatActivity implements UserFragment.OnFragmentIn
 
 
 
-        final BottomNavigationView navigation = (BottomNavigationView) this.findViewById(R.id.navigation);
+        final BottomNavigationView navigation = this.findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this::onNavigationBarItemSelected);
         BottomBarHelper.disableShiftMode(navigation);
 
@@ -99,16 +97,6 @@ public class Home extends AppCompatActivity implements UserFragment.OnFragmentIn
                     .commit();
         }
 
-
-
-        //		Soporte para la transicion
-
-
-
-
-//        //instancia a la BD
-//        final DevicesDbHelper mDbHelper = new DevicesDbHelper(this);
-//        final SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         if (!this.checkPermissions()) {
             this.requestPermissions();

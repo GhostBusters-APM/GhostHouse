@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.graphics.drawable.Animatable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
@@ -20,7 +23,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.ghostbusters.ghosthouse.R;
 import com.github.ghostbusters.ghosthouse.services.ServiceProvider;
@@ -112,6 +118,7 @@ public class NewDeviceFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable final Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_new_device, container, false);
+
         setUpCallbacks(rootView);
         return rootView;
     }
@@ -128,7 +135,21 @@ public class NewDeviceFragment extends Fragment {
         final EditText etDeviceName = view.findViewById(R.id.device_name_et);
         final EditText etDeviceWifiPassword = view.findViewById(R.id.device_password_et);
         spAvailableDevices = view.findViewById(R.id.available_devices_sp);
-        getWifiData();
+
+        final TextView tvWifiEnable = view.findViewById(R.id.wifi_enabled_tv);
+        ConnectivityManager conMan = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = conMan.getActiveNetworkInfo();
+        ImageView mImgCheck = view.findViewById(R.id.check_image);
+        ImageView mImgCross = view.findViewById(R.id.check_cross);
+        mImgCheck.setVisibility(ImageView.INVISIBLE);
+        mImgCross.setVisibility(ImageView.INVISIBLE);
+        if (netInfo != null && netInfo.getType() == ConnectivityManager.TYPE_WIFI && netInfo.isConnected()) {
+            tvWifiEnable.setText(getText(R.string.wifi_enabled));
+            mImgCheck.setVisibility(ImageView.VISIBLE);
+            ((Animatable) mImgCheck.getDrawable()).start();
+
+        }
+        getWifiData(view);
         final Button butAddDevice = view.findViewById(R.id.add_device_but);
         butAddDevice.setBackgroundColor(Color.BLUE);
         butAddDevice.setTextColor(Color.WHITE);
@@ -145,7 +166,7 @@ public class NewDeviceFragment extends Fragment {
         });
     }
 
-    private void getWifiData() {
+    private void getWifiData(View view) {
 
         ActivityCompat.requestPermissions(getActivity(), new String[]{
                         Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.CHANGE_WIFI_STATE,
@@ -155,6 +176,12 @@ public class NewDeviceFragment extends Fragment {
         final WifiManager wifi = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (wifi.isWifiEnabled() == false) {
             wifi.setWifiEnabled(true);
+
+            TextView tvWifiEnable = view.findViewById(R.id.wifi_enabled_tv);
+            ImageView mImgCheck = view.findViewById(R.id.check_image);
+            tvWifiEnable.setText(getText(R.string.wifi_activated));
+            mImgCheck.setVisibility(ImageView.VISIBLE);
+            ((Animatable) mImgCheck.getDrawable()).start();
         }
         getWifiResults(wifi);
 //        broadcastReceiver = new BroadcastReceiver() {
@@ -193,7 +220,7 @@ public class NewDeviceFragment extends Fragment {
                 R.id.device_name_et, R.id.available_devices_tv,
                 R.id.available_devices_sp, R.id.add_device_but, R.id.device_password_et, R.id.device_password_tv};
         final int[] viewIdsToHide = new int[]{R.id.loading_devices_pb,
-                R.id.loading_devices_tv};
+                R.id.loading_devices_tv, R.id.wifi_enabled_tv, R.id.check_cross, R.id.check_image};
 
         final View fragmentRootView = getView();
 

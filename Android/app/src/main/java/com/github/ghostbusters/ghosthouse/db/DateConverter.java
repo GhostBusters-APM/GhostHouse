@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 
 import java.util.Date;
 
-public class DateConverter {
+class DateConverter {
     @TypeConverter
     public static Date toDate(long timestamp) {
         return new Date(timestamp);
