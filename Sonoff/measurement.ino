@@ -1,5 +1,6 @@
 #include "HLW8012.h"
 
+
 HLW8012 hlw8012;
 
 float getEnergy() {
