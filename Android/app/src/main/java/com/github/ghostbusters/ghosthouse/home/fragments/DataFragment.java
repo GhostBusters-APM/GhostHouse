@@ -74,8 +74,14 @@ public class DataFragment extends Fragment implements AdapterView.OnItemSelected
 		}
 
 		List<Device> devices = AppDatabase.getInstance(getContext()).deviceModel().getDevicesOfUser(userId);
-		for(Device device : devices)
-			RemoteSyncService.updateDevicePowerData(this.getContext(), userId,device.getDeviceId());
+		if (devices == null || devices.isEmpty()) {
+			val toast = Toast.makeText(getContext(),"No existen dispositivos", Toast.LENGTH_SHORT);
+			toast.show();
+		}
+		else{
+			for (Device device : devices)
+				RemoteSyncService.updateDevicePowerData(this.getContext(), userId, device.getDeviceId());
+		}
 
 	}
 
@@ -89,99 +95,100 @@ public class DataFragment extends Fragment implements AdapterView.OnItemSelected
 
 		List<Device> devices = AppDatabase.getInstance(getContext()).deviceModel().getDevicesOfUser(userId);
 
-		// Spinner element
-		Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
+		if(devices!=null && !devices.isEmpty()) {
+			// Spinner element
+			Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
 
-		Drawable spinnerDrawable = spinner.getBackground().getConstantState().newDrawable();
+			Drawable spinnerDrawable = spinner.getBackground().getConstantState().newDrawable();
 
-		spinnerDrawable.setColorFilter(getResources().getColor(R.color.colorDark), PorterDuff.Mode.SRC_ATOP);
+			spinnerDrawable.setColorFilter(getResources().getColor(R.color.colorDark), PorterDuff.Mode.SRC_ATOP);
 
-		// Spinner click listener
-		spinner.setOnItemSelectedListener(this);
+			// Spinner click listener
+			spinner.setOnItemSelectedListener(this);
 
-		// Spinner Drop down elements
-		List<DeviceDropDown> list = new ArrayList<DeviceDropDown>();
-		for(Device device : devices){
-			list.add(new DeviceDropDown(device.getDeviceId(), device.getName()));
-		}
-
-		// Creating adapter for spinner
-		ArrayAdapter<DeviceDropDown> dataAdapter = new ArrayAdapter<DeviceDropDown>(this.getActivity(), android.R.layout.simple_spinner_item, list);
-
-		// Drop down layout style - list view with radio button
-		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-
-		spinner.setSelection(0);
-
-		// attaching data adapter to spinner
-		spinner.setAdapter(dataAdapter);
-
-
-		int a = devices.get(0).getDeviceId();
-		List<DevicePowerData> powerData = AppDatabase.getInstance(getContext()).devicePowerDataModel()
-				.getForDeviceIdAfterDate(devices.get(0).getDeviceId(),new Date(2017-1900,6,1));
-
-		if(powerData == null || powerData.isEmpty()){
-			val toast = Toast.makeText(getContext(),"No existen datos para el dispositivo seleecionado",Toast.LENGTH_LONG);
-			toast.show();
-		}
-		else {
-
-			LineChart chart = (LineChart) view.findViewById(R.id.lineChart);
-
-			List<Entry> entriesLineChart = new ArrayList<Entry>();
-			List<BarEntry> barEntry = new ArrayList<BarEntry>();
-			double max = 0;
-			double min = 0;
-			double media = 0;
-			for (DevicePowerData data : powerData) {
-				if (max == 0 && min == 0) {
-					max = data.getValue();
-					min = data.getValue();
-				} else {
-					if (data.getValue() > max) {
-						max = data.getValue();
-					}
-					if (data.getValue() < min) {
-						min = data.getValue();
-					}
-				}
-
-				media = media + data.getValue();
-				entriesLineChart.add(new Entry(data.getDate().getHours(), (float) data.getValue()));
-				barEntry.add(new BarEntry(data.getDate().getHours(), (float) data.getValue()));
+			// Spinner Drop down elements
+			List<DeviceDropDown> list = new ArrayList<DeviceDropDown>();
+			for (Device device : devices) {
+				list.add(new DeviceDropDown(device.getDeviceId(), device.getName()));
 			}
 
-			media = media / powerData.size();
+			// Creating adapter for spinner
+			ArrayAdapter<DeviceDropDown> dataAdapter = new ArrayAdapter<DeviceDropDown>(this.getActivity(), android.R.layout.simple_spinner_item, list);
 
-			LineDataSet dataSet = new LineDataSet(entriesLineChart, "Consumption");
-			dataSet.setColor(Color.rgb(0, 128, 96));
+			// Drop down layout style - list view with radio button
+			dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
 
-			LineData lineData = new LineData();
-			lineData.addDataSet(dataSet);
-			chart.setData(lineData);
-			chart.getDescription().setText("Last ten hours consumption");
-			chart.invalidate();
+			spinner.setSelection(0);
 
-			BarDataSet barDataSet = new BarDataSet(barEntry, "Consumption");
-			barDataSet.setColor(Color.rgb(0, 128, 96));
+			// attaching data adapter to spinner
+			spinner.setAdapter(dataAdapter);
 
-			BarChart barChart = (BarChart) view.findViewById(R.id.barChart);
-			BarData barData = new BarData();
-			barData.addDataSet(barDataSet);
-			barChart.setData(barData);
-			barChart.invalidate();
 
-			TextView textViewMax = (TextView) view.findViewById(R.id.textViewMax);
-			textViewMax.setText("Consumo máximo: " + String.valueOf(max) + " w");
+			int a = devices.get(0).getDeviceId();
+			List<DevicePowerData> powerData = AppDatabase.getInstance(getContext()).devicePowerDataModel()
+					.getForDeviceIdAfterDate(devices.get(0).getDeviceId(), new Date(2017 - 1900, 6, 1));
 
-			TextView textViewMin = (TextView) view.findViewById(R.id.textViewMin);
-			textViewMin.setText("Consumo mínimo: " + String.valueOf(min) + " w");
+			if (powerData == null || powerData.isEmpty()) {
+				val toast = Toast.makeText(getContext(), "No existen datos para el dispositivo seleecionado", Toast.LENGTH_LONG);
+				toast.show();
+			} else {
 
-			TextView textViewMedia = (TextView) view.findViewById(R.id.textViewMedia);
-			textViewMedia.setText("Consumo medio: " + String.valueOf(media) + " w");
+				LineChart chart = (LineChart) view.findViewById(R.id.lineChart);
+
+				List<Entry> entriesLineChart = new ArrayList<Entry>();
+				List<BarEntry> barEntry = new ArrayList<BarEntry>();
+				double max = 0;
+				double min = 0;
+				double media = 0;
+				for (DevicePowerData data : powerData) {
+					if (max == 0 && min == 0) {
+						max = data.getValue();
+						min = data.getValue();
+					} else {
+						if (data.getValue() > max) {
+							max = data.getValue();
+						}
+						if (data.getValue() < min) {
+							min = data.getValue();
+						}
+					}
+
+					media = media + data.getValue();
+					entriesLineChart.add(new Entry(data.getDate().getHours(), (float) data.getValue()));
+					barEntry.add(new BarEntry(data.getDate().getHours(), (float) data.getValue()));
+				}
+
+				media = media / powerData.size();
+
+				LineDataSet dataSet = new LineDataSet(entriesLineChart, "Consumption");
+				dataSet.setColor(Color.rgb(0, 128, 96));
+
+
+				LineData lineData = new LineData();
+				lineData.addDataSet(dataSet);
+				chart.setData(lineData);
+				chart.getDescription().setText("Last ten hours consumption");
+				chart.invalidate();
+
+				BarDataSet barDataSet = new BarDataSet(barEntry, "Consumption");
+				barDataSet.setColor(Color.rgb(0, 128, 96));
+
+				BarChart barChart = (BarChart) view.findViewById(R.id.barChart);
+				BarData barData = new BarData();
+				barData.addDataSet(barDataSet);
+				barChart.setData(barData);
+				barChart.invalidate();
+
+				TextView textViewMax = (TextView) view.findViewById(R.id.textViewMax);
+				textViewMax.setText("Consumo máximo: " + String.valueOf(max) + " w");
+
+				TextView textViewMin = (TextView) view.findViewById(R.id.textViewMin);
+				textViewMin.setText("Consumo mínimo: " + String.valueOf(min) + " w");
+
+				TextView textViewMedia = (TextView) view.findViewById(R.id.textViewMedia);
+				textViewMedia.setText("Consumo medio: " + String.valueOf(media) + " w");
+			}
 		}
 		return view;
 	}
